@@ -15,10 +15,24 @@ passport.use(
     // Verify callback
     async (accessToken, refreshToken, profile, done) => {
       try {
+
+        const email = profile.emails?.[0]?.value;
+        
+        if (!email) {
+          return done(new Error("No email found in Google profile"), undefined);
+        }
         // Check if user exists
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
+          user = await User.findOne({ email });
+        }
+        if (user) {
+          user.googleId = profile.id;
+          user.provider = "google";
+          user.avatar = profile.photos?.[0]?.value;
+          await user.save();
+        } else {
           // Create new user
           user = await User.create({
             googleId: profile.id,
