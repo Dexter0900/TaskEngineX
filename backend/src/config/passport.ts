@@ -28,10 +28,13 @@ passport.use(
           user = await User.findOne({ email });
         }
         if (user) {
-          user.googleId = profile.id;
-          user.provider = "google";
-          user.avatar = profile.photos?.[0]?.value;
-          await user.save();
+          await User.updateOne(
+            { _id: user._id },
+            {
+              $addToSet: { provider: "google" },
+              $set: { googleId: profile.id }
+            }
+          );
         } else {
           // Create new user
           user = await User.create({
@@ -39,7 +42,7 @@ passport.use(
             email: profile.emails?.[0]?.value || "",
             name: profile.displayName,
             avatar: profile.photos?.[0]?.value,
-            provider: "google",
+            provider: ["google"],
           });
         }
 

@@ -78,12 +78,18 @@ export const verifyMagicLink = async (req: Request, res: Response) => {
     // Find or create user
     let user = await User.findOne({ email });
 
-    if (!user) {
+    if (user) {
+      await User.updateOne(
+        { _id: user._id },
+        { $addToSet: { provider: "magic-link" } }
+      );
+    } else {
       // Create new user
       user = await User.create({
         email,
         name: email.split("@")[0], // Default name from email
-        provider: "magic-link",
+        provider: ["magic-link"],
+        googleId: undefined,
       });
     }
 

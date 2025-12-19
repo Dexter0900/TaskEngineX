@@ -5,7 +5,7 @@ export interface IUser extends Document {
   name: string;
   avatar?: string;
   googleId?: string;
-  provider: "google" | "magic-link";
+  provider: ("google" | "magic-link")[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,7 +31,7 @@ const userSchema = new Schema<IUser>(
       sparse: true,
     },
     provider: {
-      type: String,
+      type: [String],
       enum: ["google", "magic-link"],
       required: true,
     },
