@@ -2,7 +2,9 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IUser extends Document {
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  password?: string; // Optional for google users
   avatar?: string;
   googleId?: string;
   provider: ("google" | "magic-link")[];
@@ -19,10 +21,9 @@ const userSchema = new Schema<IUser>(
       lowercase: true,
       trim: true,
     },
-    name: {
-      type: String,
-      required: true,
-    },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    password: { type: String }, // hashed password
     avatar: {
       type: String,
     },
