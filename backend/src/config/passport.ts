@@ -21,28 +21,40 @@ passport.use(
         if (!email) {
           return done(new Error("No email found in Google profile"), undefined);
         }
+        
+        // Extract first name and last name from Google profile
+        const firstName = profile.name?.givenName || profile.displayName.split(" ")[0] || "User";
+        const lastName = profile.name?.familyName || profile.displayName.split(" ").slice(1).join(" ") || "";
+        
         // Check if user exists
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
           user = await User.findOne({ email });
         }
+        
         if (user) {
+          // Update existing user with Google provider
           await User.updateOne(
             { _id: user._id },
             {
               $addToSet: { provider: "google" },
-              $set: { googleId: profile.id }
+              $set: { 
+                googleId: profile.id,
+                avatar: profile.photos?.[0]?.value || user.avatar
+              }
             }
           );
         } else {
-          // Create new user
+          // Create new user with first and last name from Google
           user = await User.create({
             googleId: profile.id,
-            email: profile.emails?.[0]?.value || "",
-            name: profile.displayName,
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
             avatar: profile.photos?.[0]?.value,
             provider: ["google"],
+            password: undefined, // No password for Google users
           });
         }
 

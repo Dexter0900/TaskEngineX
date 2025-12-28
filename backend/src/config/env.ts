@@ -17,8 +17,8 @@ export const ENV = {
   MONGO_URI: getRequiredEnv("MONGO_URI"),
   
   // JWT
-  JWT_SECRET: getRequiredEnv("JWT_SECRET"),
-  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || "7d",
+  JWT_SECRET: getRequiredEnv("JWT_SECRET") as string,
+  JWT_EXPIRES_IN: (process.env.JWT_EXPIRES_IN || "7d") as string,
   
   // Google OAuth
   GOOGLE_CLIENT_ID: getRequiredEnv("GOOGLE_CLIENT_ID"),
@@ -33,8 +33,8 @@ export const ENV = {
   EMAIL_FROM: process.env.EMAIL_FROM || "noreply@taskengine.com",
   
   // Magic Link
-  MAGIC_LINK_SECRET: getRequiredEnv("MAGIC_LINK_SECRET"),
-  MAGIC_LINK_EXPIRES_IN: process.env.MAGIC_LINK_EXPIRES_IN || "15m",
+  MAGIC_LINK_SECRET: getRequiredEnv("MAGIC_LINK_SECRET") as string,
+  MAGIC_LINK_EXPIRES_IN: (process.env.MAGIC_LINK_EXPIRES_IN || "15m") as string,
   
   // Frontend
   FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:5173",
