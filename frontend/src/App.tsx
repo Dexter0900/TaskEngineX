@@ -20,6 +20,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* PUBLIC ROUTES - Anyone can access */}
+          <Route path="/signup" element={<Login />} /> {/* Reuse Login component for signup */}
           <Route path="/login" element={<Login />} />
           <Route path="/auth/verify" element={<Verify />} />
           <Route path="/auth/success" element={<GoogleSuccess />} />
