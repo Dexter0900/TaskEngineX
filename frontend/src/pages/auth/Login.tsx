@@ -1,152 +1,151 @@
-// src/pages/auth/Login.tsx
 import { useState } from "react";
-import { sendMagicLink, loginWithGoogle } from "../../api/authApi";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FiMail, FiLock } from "react-icons/fi";
+import { FcGoogle } from "react-icons/fc";
+import { login, loginWithGoogle } from "../../api/authApi";
+import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
+import Button from "../../components/ui/Button";
 
-/**
- * LOGIN PAGE
- * Google OAuth aur Magic Link dono options
- */
-const Login = () => {
-
-  // State
-  const [email, setEmail] = useState("");
+export default function Login() {
+  const navigate = useNavigate();
+  const { login: authLogin } = useAuth();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
-  /**
-   * HANDLE MAGIC LINK SUBMIT
-   * Email pe magic link bhejta hai
-   */
-  const handleMagicLinkSubmit = async (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation
-    if (!email || !email.includes("@")) {
-      setError("Please enter a valid email");
+    if (!formData.email || !formData.password) {
+      toast.error("Please enter email and password");
       return;
     }
 
     setLoading(true);
-    setError("");
-    setMessage("");
-
     try {
-      // API call
-      const response = await sendMagicLink(email);
+      const response = await login(formData);
+      
+      authLogin(response.token, response.user);
+      
+      toast.success("Login successful!");
+      navigate("/dashboard");
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.message || "Login failed";
+      const errorCode = error.response?.data?.code;
 
-      // Success
-      setMessage(response.message || "Check your email for login link!");
-      setEmail(""); // Clear input
-
-      console.log("✅ Magic link sent to:", email);
-    } catch (err: any) {
-      // Error
-      console.error("❌ Magic link error:", err);
-      setError(
-        err.response?.data?.message || "Failed to send magic link. Try again."
-      );
+      if (errorCode === "NO_PASSWORD_SET") {
+        toast.error(errorMsg);
+      } else {
+        toast.error(errorMsg);
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  /**
-   * HANDLE GOOGLE LOGIN
-   * Google OAuth flow start karta
-   */
-  const handleGoogleLogin = () => {
-    console.log("🔵 Redirecting to Google OAuth...");
-    loginWithGoogle();
-  };
-
   return (
-    <div style={{ maxWidth: "400px", margin: "100px auto", padding: "20px" }}>
-      <h1>Welcome to TaskEngineX 🚀</h1>
-      <p>Sign in to manage your tasks</p>
-
-      {/* Error Message */}
-      {error && (
-        <div style={{ color: "red", padding: "10px", marginBottom: "10px", border: "1px solid red", borderRadius: "4px" }}>
-          {error}
-        </div>
-      )}
-
-      {/* Success Message */}
-      {message && (
-        <div style={{ color: "green", padding: "10px", marginBottom: "10px", border: "1px solid green", borderRadius: "4px" }}>
-          {message}
-        </div>
-      )}
-
-      {/* Google Login Button */}
-      <button
-        onClick={handleGoogleLogin}
-        style={{
-          width: "100%",
-          padding: "12px",
-          marginBottom: "20px",
-          backgroundColor: "#4285f4",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          fontSize: "16px",
-        }}
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-md w-full"
       >
-        🔵 Continue with Google
-      </button>
-
-      <div style={{ textAlign: "center", margin: "20px 0" }}>
-        <span>OR</span>
-      </div>
-
-      {/* Magic Link Form */}
-      <form onSubmit={handleMagicLinkSubmit}>
-        <div style={{ marginBottom: "15px" }}>
-          <label htmlFor="email" style={{ display: "block", marginBottom: "5px" }}>
-            Email Address
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "10px",
-              fontSize: "16px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-            }}
-          />
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome Back</h1>
+          <p className="text-muted-foreground">Sign in to continue to your tasks</p>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "12px",
-            backgroundColor: loading ? "#ccc" : "#4F46E5",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: loading ? "not-allowed" : "pointer",
-            fontSize: "16px",
-          }}
-        >
-          {loading ? "Sending..." : "✨ Send Magic Link"}
-        </button>
-      </form>
+        {/* Card */}
+        <div className="bg-card border border-border rounded-2xl shadow-lg p-8">
+          {/* Google Button */}
+          <Button
+            onClick={loginWithGoogle}
+            variant="outline"
+            className="w-full mb-6"
+          >
+            <FcGoogle className="w-5 h-5 mr-2" />
+            Continue with Google
+          </Button>
 
-      <p style={{ marginTop: "20px", fontSize: "14px", color: "#666" }}>
-        We'll send you a magic link to sign in without password
-      </p>
+          {/* Divider */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="flex-1 border-t border-border"></div>
+            <span className="text-sm text-muted-foreground">or</span>
+            <div className="flex-1 border-t border-border"></div>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Email
+              </label>
+              <div className="relative">
+                <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none text-foreground placeholder:text-muted-foreground"
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent outline-none text-foreground placeholder:text-muted-foreground"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={loading}
+              isLoading={loading}
+              className="w-full"
+            >
+              Sign In
+            </Button>
+          </form>
+
+          {/* Footer */}
+          <p className="text-center text-sm text-muted-foreground mt-6">
+            Don't have an account?{" "}
+            <Link
+              to="/signup"
+              className="text-primary hover:text-primary/80 font-medium"
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
+      </motion.div>
     </div>
   );
-};
-
-export default Login;
+}
