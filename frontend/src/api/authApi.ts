@@ -1,26 +1,29 @@
 // src/api/authApi.ts
 import axiosInstance from "./axios";
-import type { AuthResponse, MagicLinkResponse, User } from "../types";
+import type { 
+  AuthResponse, 
+  MagicLinkResponse, 
+  User, 
+  SignupData,
+  LoginData,
+  SetPasswordData
+} from "../types";
 
 /**
- * SEND MAGIC LINK
- * Email pe magic link bhejta hai
+ * SIGNUP
+ * User registration - sends magic link for email verification
  * 
- * @param email - User ka email
+ * @param data - Signup data (email, password, firstName, lastName)
  * @returns Success message
  */
-export const sendMagicLink = async (
-  email: string
-): Promise<MagicLinkResponse> => {
-  const response = await axiosInstance.post("/auth/magic-link/send", {
-    email,
-  });
+export const signup = async (data: SignupData): Promise<MagicLinkResponse> => {
+  const response = await axiosInstance.post("/auth/signup", data);
   return response.data;
 };
 
 /**
  * VERIFY MAGIC LINK
- * Magic link token verify karta aur login karata
+ * Magic link token verify karta aur user create karta (after signup)
  * 
  * @param token - Magic link token (URL se)
  * @returns Auth token aur user data
@@ -29,6 +32,18 @@ export const verifyMagicLink = async (token: string): Promise<AuthResponse> => {
   const response = await axiosInstance.post("/auth/magic-link/verify", {
     token,
   });
+  return response.data;
+};
+
+/**
+ * LOGIN
+ * Email/password se login
+ * 
+ * @param data - Login credentials (email, password)
+ * @returns Auth token aur user data
+ */
+export const login = async (data: LoginData): Promise<AuthResponse> => {
+  const response = await axiosInstance.post("/auth/login", data);
   return response.data;
 };
 
@@ -45,6 +60,21 @@ export const loginWithGoogle = () => {
 
   // Redirect to Google
   window.location.href = googleAuthUrl;
+};
+
+/**
+ * SET PASSWORD
+ * Google-only users ke liye password set karna (account linking)
+ * Protected route - JWT token required
+ * 
+ * @param data - Password aur optional name update
+ * @returns Success message
+ */
+export const setPassword = async (
+  data: SetPasswordData
+): Promise<{ message: string; success: boolean }> => {
+  const response = await axiosInstance.post("/auth/set-password", data);
+  return response.data;
 };
 
 /**

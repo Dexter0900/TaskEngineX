@@ -274,7 +274,7 @@ export default function Tasks() {
                 className="bg-card border border-border hover:border-primary-500 rounded-xl p-6 transition-all"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <didiv
+                  <div
                       className="cursor-pointer"
                       onClick={() =>
                         setExpandedTask(expandedTask === task._id ? null : task._id)

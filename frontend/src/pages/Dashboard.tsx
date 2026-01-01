@@ -1,253 +1,297 @@
-// src/pages/Dashboard.tsx
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { motion } from "framer-motion";
+import {
+  FiCheckCircle,
+  FiClock,
+  FiAlertCircle,
+  FiTrendingUp,
+  FiCloud,
+} from "react-icons/fi";
 import { getAllTasks, getTaskStats } from "../api/taskApi";
 import type { Task, TaskStatsResponse } from "../types";
-import { logout as logoutApi } from "../api/authApi";
+import Layout from "../components/Layout";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+} from "recharts";
 
-/**
- * DASHBOARD PAGE
- * User ke tasks dikhata hai aur manage karne deta
- */
-const Dashboard = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  // State
+export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [stats, setStats] = useState<TaskStatsResponse["stats"] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [weather, setWeather] = useState<any>(null);
 
-  /**
-   * FETCH DATA ON MOUNT
-   * Tasks aur stats load karo
-   */
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        // Parallel requests (dono ek saath)
-        const [tasksResponse, statsResponse] = await Promise.all([
-          getAllTasks(),
-          getTaskStats(),
-        ]);
-
-        setTasks(tasksResponse.tasks);
-        setStats(statsResponse.stats);
-
-        console.log("✅ Dashboard data loaded");
-      } catch (err: any) {
-        console.error("❌ Dashboard data error:", err);
-        setError(err.response?.data?.message || "Failed to load dashboard");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
+    fetchWeather();
   }, []);
 
-  /**
-   * HANDLE LOGOUT
-   * User ko logout karta
-   */
-  const handleLogout = async () => {
+  const fetchData = async () => {
     try {
-      await logoutApi();
-      logout();
-      navigate("/login", { replace: true });
-    } catch (err) {
-      console.error("Logout error:", err);
-      // Force logout even if API fails
-      logout();
-      navigate("/login", { replace: true });
+      const [tasksResponse, statsResponse] = await Promise.all([
+        getAllTasks(),
+        getTaskStats(),
+      ]);
+
+      setTasks(tasksResponse.tasks);
+      setStats(statsResponse.stats);
+    } catch (error) {
+      console.error("Failed to load dashboard data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Loading state
+  const fetchWeather = async () => {
+    try {
+      // OpenWeatherMap free API (replace with your API key)
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=Delhi&appid=3b59f4d88622529f43723ea4123d29e7&units=metric`
+      );
+      const data = await response.json();
+      setWeather(data);
+    } catch (error) {
+      console.log("Weather fetch failed (API key needed)");
+    }
+  };
+
   if (loading) {
     return (
-      <div style={{ padding: "20px", textAlign: "center" }}>
-        <h2>Loading dashboard...</h2>
-      </div>
+      <Layout>
+        <div className="flex items-center justify-center h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        </div>
+      </Layout>
     );
   }
 
-  // Error state
-  if (error) {
-    return (
-      <div style={{ padding: "20px", textAlign: "center", color: "red" }}>
-        <h2>Error: {error}</h2>
-        <button onClick={() => window.location.reload()}>Retry</button>
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
-      {/* Header */}
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "30px",
-      }}>
-        <div>
-          <h1>TaskEngineX Dashboard 🚀</h1>
-          <p>Welcome back, {user?.name}! ({user?.email})</p>
-        </div>
-        <button
-          onClick={handleLogout}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#ef4444",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          Logout
-        </button>
-      </div>
-
-      {/* Stats Cards */}
-      {stats && (
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "20px",
-          marginBottom: "30px",
-        }}>
-          <StatCard title="Total Tasks" value={stats.total} color="#3b82f6" />
-          <StatCard title="Pending" value={stats.pending} color="#f59e0b" />
-          <StatCard title="In Progress" value={stats.inProgress} color="#8b5cf6" />
-          <StatCard title="Completed" value={stats.completed} color="#10b981" />
-          <StatCard title="High Priority" value={stats.highPriority} color="#ef4444" />
-        </div>
-      )}
-
-      {/* Tasks List */}
-      <div>
-        <h2>Your Tasks ({tasks.length})</h2>
-
-        {tasks.length === 0 ? (
-          <div style={{
-            padding: "40px",
-            textAlign: "center",
-            border: "2px dashed #ccc",
-            borderRadius: "8px",
-          }}>
-            <p style={{ fontSize: "18px", color: "#666" }}>
-              No tasks yet. Start by creating one!
-            </p>
-            <button style={{
-              marginTop: "20px",
-              padding: "10px 20px",
-              backgroundColor: "#4F46E5",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}>
-              + Create Task
-            </button>
-          </div>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            {tasks.map((task) => (
-              <TaskCard key={task._id} task={task} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Note */}
-      <div style={{
-        marginTop: "40px",
-        padding: "20px",
-        backgroundColor: "#f3f4f6",
-        borderRadius: "8px",
-      }}>
-        <p style={{ margin: 0, color: "#666" }}>
-          💡 <strong>Next Steps:</strong> Kal UI improve karenge, create/edit/delete functionality add karenge!
-        </p>
-      </div>
-    </div>
-  );
-};
-
-/**
- * STAT CARD COMPONENT
- * Dashboard stats ke liye reusable card
- */
-const StatCard = ({ title, value, color }: { title: string; value: number; color: string }) => (
-  <div style={{
-    padding: "20px",
-    backgroundColor: "white",
-    border: `2px solid ${color}`,
-    borderRadius: "8px",
-  }}>
-    <h3 style={{ margin: "0 0 10px 0", color: "#666", fontSize: "14px" }}>{title}</h3>
-    <p style={{ margin: 0, fontSize: "32px", fontWeight: "bold", color }}>{value}</p>
-  </div>
-);
-
-/**
- * TASK CARD COMPONENT
- * Single task display (basic version)
- */
-const TaskCard = ({ task }: { task: Task }) => {
   const statusColors = {
     pending: "#f59e0b",
     "in-progress": "#8b5cf6",
     completed: "#10b981",
   };
 
-  const priorityColors = {
-    low: "#3b82f6",
-    medium: "#f59e0b",
-    high: "#ef4444",
-  };
+  const pieData = [
+    { name: "Pending", value: stats?.pending || 0, color: "#f59e0b" },
+    { name: "In Progress", value: stats?.inProgress || 0, color: "#8b5cf6" },
+    { name: "Completed", value: stats?.completed || 0, color: "#10b981" },
+  ];
+
+  const priorityData = [
+    { name: "Low", value: 0 },
+    { name: "Medium", value: 0 },
+    { name: "High", value: stats?.highPriority || 0 },
+  ];
 
   return (
-    <div style={{
-      padding: "15px",
-      backgroundColor: "white",
-      border: "1px solid #e5e7eb",
-      borderRadius: "8px",
-    }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+    <Layout>
+      <div className="space-y-6">
+        {/* Header */}
         <div>
-          <h3 style={{ margin: "0 0 8px 0" }}>{task.title}</h3>
-          {task.description && (
-            <p style={{ margin: "0 0 10px 0", color: "#666" }}>{task.description}</p>
-          )}
-          <div style={{ display: "flex", gap: "10px", fontSize: "12px" }}>
-            <span style={{
-              padding: "4px 8px",
-              backgroundColor: statusColors[task.status],
-              color: "white",
-              borderRadius: "4px",
-            }}>
-              {task.status}
-            </span>
-            <span style={{
-              padding: "4px 8px",
-              backgroundColor: priorityColors[task.priority],
-              color: "white",
-              borderRadius: "4px",
-            }}>
-              {task.priority}
-            </span>
-          </div>
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-muted-foreground">Overview of your tasks and productivity</p>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Total Tasks</p>
+                <p className="text-3xl font-bold text-foreground mt-2">{stats?.total || 0}</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                <FiTrendingUp className="text-blue-600 dark:text-blue-400" size={24} />
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Pending</p>
+                <p className="text-3xl font-bold text-foreground mt-2">{stats?.pending || 0}</p>
+              </div>
+              <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900 rounded-lg flex items-center justify-center">
+                <FiClock className="text-amber-600 dark:text-amber-400" size={24} />
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">In Progress</p>
+                <p className="text-3xl font-bold text-foreground mt-2">{stats?.inProgress || 0}</p>
+              </div>
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+                <FiAlertCircle className="text-purple-600 dark:text-purple-400" size={24} />
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Completed</p>
+                <p className="text-3xl font-bold text-foreground mt-2">{stats?.completed || 0}</p>
+              </div>
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                <FiCheckCircle className="text-green-600 dark:text-green-400" size={24} />
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Charts Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Status Distribution Pie Chart */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+            className="bg-card border border-border rounded-xl p-6"
+          >
+            <h3 className="text-lg font-semibold mb-4">Status Distribution</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) =>
+                    `${name}: ${((percent || 0) * 100).toFixed(0)}%`
+                  }
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </motion.div>
+
+          {/* Priority Bar Chart */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.6 }}
+            className="bg-card border border-border rounded-xl p-6"
+          >
+            <h3 className="text-lg font-semibold mb-4">Priority Breakdown</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={priorityData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="value" fill="#f97316" name="Tasks" />
+              </BarChart>
+            </ResponsiveContainer>
+          </motion.div>
+        </div>
+
+        {/* Weather Widget + Recent Tasks */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Weather Widget */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7 }}
+            className="bg-linear-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Weather</h3>
+              <FiCloud size={24} />
+            </div>
+            {weather ? (
+              <div>
+                <p className="text-4xl font-bold">{Math.round(weather.main?.temp || 0)}°C</p>
+                <p className="text-sm opacity-90 mt-1">{weather.weather?.[0]?.description}</p>
+                <p className="text-xs opacity-75 mt-2">{weather.name}</p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-sm opacity-75">Weather data unavailable</p>
+                <p className="text-xs opacity-60 mt-2">Add OpenWeather API key</p>
+              </div>
+            )}
+          </motion.div>
+
+          {/* Recent Tasks */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.8 }}
+            className="lg:col-span-2 bg-card border border-border rounded-xl p-6"
+          >
+            <h3 className="text-lg font-semibold mb-4">Recent Tasks</h3>
+            <div className="space-y-3">
+              {tasks.slice(0, 5).map((task, index) => (
+                <motion.div
+                  key={task._id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.9 + index * 0.1 }}
+                  className="flex items-center justify-between p-3 bg-background rounded-lg border border-border hover:border-primary-500 transition-colors"
+                >
+                  <div className="flex-1">
+                    <p className="font-medium text-sm">{task.title}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Priority: {task.priority} • Status: {task.status}
+                    </p>
+                  </div>
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{
+                      backgroundColor:
+                        statusColors[task.status as keyof typeof statusColors],
+                    }}
+                  ></div>
+                </motion.div>
+              ))}
+              {tasks.length === 0 && (
+                <p className="text-center text-muted-foreground py-8">
+                  No tasks yet. Start creating tasks!
+                </p>
+              )}
+            </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
-};
-
-export default Dashboard;
+}

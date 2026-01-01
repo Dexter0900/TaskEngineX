@@ -7,9 +7,10 @@
 export interface User {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   avatar?: string;
-  provider: "google" | "magic-link";
+  provider: ("google" | "magic-link")[];
 }
 
 /**
@@ -25,6 +26,36 @@ export interface AuthResponse {
 export interface MagicLinkResponse {
   message: string;
   success: boolean;
+}
+
+/**
+ * SIGNUP DATA
+ * Signup form ka data
+ */
+export interface SignupData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
+/**
+ * LOGIN DATA
+ * Login form ka data
+ */
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+/**
+ * SET PASSWORD DATA
+ * Google users ke liye password set karne ka data
+ */
+export interface SetPasswordData {
+  password: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 /**
