@@ -12,6 +12,7 @@ import Verify from "./pages/auth/Verify";
 import SetPassword from "./pages/auth/SetPassword";
 import GoogleSuccess from "./pages/auth/GoogleSuccess";
 import Dashboard from "./pages/Dashboard";
+import Tasks from "./pages/Tasks";
 import NotFound from "./pages/NotFound";
 
 /**
@@ -36,6 +37,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks"
+              element={
+                <ProtectedRoute>
+                  <Tasks />
                 </ProtectedRoute>
               }
             />
