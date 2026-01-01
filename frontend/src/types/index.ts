@@ -76,6 +76,19 @@ export interface Task {
 }
 
 /**
+ * SUBTASK TYPES
+ * Subtask ka structure
+ */
+export interface Subtask {
+  _id: string;
+  taskId: string;
+  title: string;
+  completed: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
  * TASK API RESPONSES
  */
 export interface TasksResponse {
@@ -98,6 +111,21 @@ export interface TaskStatsResponse {
     completed: number;
     highPriority: number;
   };
+}
+
+/**
+ * SUBTASK API RESPONSES
+ */
+export interface SubtasksResponse {
+  success: boolean;
+  subtasks: Subtask[];
+  count: number;
+}
+
+export interface SingleSubtaskResponse {
+  success: boolean;
+  message: string;
+  subtask: Subtask;
 }
 
 /**

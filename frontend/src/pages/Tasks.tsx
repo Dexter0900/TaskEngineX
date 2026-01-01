@@ -13,6 +13,7 @@ import {
 import { getAllTasks, createTask, updateTask, deleteTask } from "../api/taskApi";
 import type { Task } from "../types";
 import Layout from "../components/Layout";
+import SubtaskList from "../components/SubtaskList";
 import toast from "react-hot-toast";
 
 type TaskFormData = {
@@ -29,6 +30,7 @@ export default function Tasks() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [expandedTask, setExpandedTask] = useState<string | null>(null);
   
   // Filters
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -272,36 +274,55 @@ export default function Tasks() {
                 className="bg-card border border-border hover:border-primary-500 rounded-xl p-6 transition-all"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-foreground mb-2">
-                      {task.title}
-                    </h3>
-                    {task.description && (
-                      <p className="text-sm text-muted-foreground mb-3">
-                        {task.description}
-                      </p>
-                    )}
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          statusColors[task.status]
-                        }`}
-                      >
-                        {task.status.replace("-", " ")}
-                      </span>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          priorityColors[task.priority]
-                        }`}
-                      >
-                        {task.priority}
-                      </span>
-                      {task.dueDate && (
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <FiCalendar className="w-3 h-3" />
-                          {new Date(task.dueDate).toLocaleDateString()}
-                        </span>
+                  <div
+                      className="cursor-pointer"
+                      onClick={() =>
+                        setExpandedTask(expandedTask === task._id ? null : task._id)
+                      }
+                    >
+                      <h3 className="text-lg font-semibold text-foreground mb-2">
+                        {task.title}
+                      </h3>
+                      {task.description && (
+                        <p className="text-sm text-muted-foreground mb-3">
+                          {task.description}
+                        </p>
                       )}
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            statusColors[task.status]
+                          }`}
+                        >
+                          {task.status.replace("-", " ")}
+                        </span>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            priorityColors[task.priority]
+                          }`}
+                        >
+                          {task.priority}
+                        </span>
+                        {task.dueDate && (
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <FiCalendar className="w-3 h-3" />
+                            {new Date(task.dueDate).toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Subtasks - Expanded */}
+                    {expandedTask === task._id && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="border-t border-border mt-4 pt-4"
+                      >
+                        <SubtaskList taskId={task._id} />
+                      </motion.div>
+                    )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
