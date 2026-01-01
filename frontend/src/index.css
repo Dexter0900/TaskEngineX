@@ -1,39 +1,28 @@
 @import "tailwindcss";
 
-/* Dark mode permanent theme variables */
-@layer theme {
-  :root {
-    --background: oklch(0.15 0 0);
-    --foreground: oklch(0.98 0 0);
-    --card: oklch(0.18 0 0);
-    --card-foreground: oklch(0.98 0 0);
-    --popover: oklch(0.15 0 0);
-    --popover-foreground: oklch(0.98 0 0);
-    --primary: oklch(0.68 0.21 35);
-    --primary-foreground: oklch(0.20 0 0);
-    --secondary: oklch(0.25 0 0);
-    --secondary-foreground: oklch(0.98 0 0);
-    --muted: oklch(0.25 0 0);
-    --muted-foreground: oklch(0.65 0 0);
-    --accent: oklch(0.25 0 0);
-    --accent-foreground: oklch(0.98 0 0);
-    --destructive: oklch(0.40 0.20 25);
-    --destructive-foreground: oklch(0.98 0 0);
-    --border: oklch(0.25 0 0);
-    --input: oklch(0.25 0 0);
-    --ring: oklch(0.68 0.21 35);
-    --radius: 0.5rem;
-  }
+/* Dark mode permanent theme variables using @theme */
+@theme {
+  --color-background: oklch(0.15 0 0);
+  --color-foreground: oklch(0.98 0 0);
+  --color-card: oklch(0.18 0 0);
+  --color-card-foreground: oklch(0.98 0 0);
+  --color-accent: oklch(0.35 0 0);
+  --color-accent-foreground: oklch(0.98 0 0);
+  --color-border: oklch(0.25 0 0);
+  --color-input: oklch(0.25 0 0);
+  --color-muted: oklch(0.25 0 0);
+  --color-muted-foreground: oklch(0.65 0 0);
+  --radius: 0.5rem;
 }
 
 @layer base {
   * {
-    border-color: var(--border);
+    border-color: var(--color-border);
   }
   
   body {
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
