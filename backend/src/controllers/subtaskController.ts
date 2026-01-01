@@ -3,22 +3,20 @@ import { Request, Response } from "express";
 import Subtask from "../models/Subtask";
 import { Task } from "../models/Task";
 
-// Auth request type
+// Auth request type (matches middleware pattern)
 interface AuthRequest extends Request {
-  user?: {
-    _id: string;
-    email: string;
-  };
+  userId?: string;
+  userEmail?: string;
 }
 
 /**
  * GET ALL SUBTASKS FOR A TASK
  * Ek task ke saare subtasks fetch karta
  */
-export const getSubtasks = async (req: Request, res: Response) => {
+export const getSubtasks = async (req: AuthRequest, res: Response) => {
   try {
     const { taskId } = req.params;
-    const userId = req.user?._id;
+    const userId = req.userId;
 
     // Check if task belongs to user
     const task = await Task.findOne({ _id: taskId, userId });
@@ -44,11 +42,11 @@ export const getSubtasks = async (req: Request, res: Response) => {
  * CREATE SUBTASK
  * Naya subtask banata
  */
-export const createSubtask = async (req: Request, res: Response) => {
+export const createSubtask = async (req: AuthRequest, res: Response) => {
   try {
     const { taskId } = req.params;
     const { title } = req.body;
-    const userId = req.user?._id;
+    const userId = req.userId;
 
     // Validation
     if (!title || !title.trim()) {
@@ -83,10 +81,10 @@ export const createSubtask = async (req: Request, res: Response) => {
  * TOGGLE SUBTASK COMPLETED
  * Subtask ko complete/incomplete toggle karta
  */
-export const toggleSubtask = async (req: Request, res: Response) => {
+export const toggleSubtask = async (req: AuthRequest, res: Response) => {
   try {
     const { taskId, subtaskId } = req.params;
-    const userId = req.user?._id;
+    const userId = req.userId;
 
     // Check if task belongs to user
     const task = await Task.findOne({ _id: taskId, userId });
@@ -119,11 +117,11 @@ export const toggleSubtask = async (req: Request, res: Response) => {
  * UPDATE SUBTASK
  * Subtask ka title update karta
  */
-export const updateSubtask = async (req: Request, res: Response) => {
+export const updateSubtask = async (req: AuthRequest, res: Response) => {
   try {
     const { taskId, subtaskId } = req.params;
     const { title } = req.body;
-    const userId = req.user?._id;
+    const userId = req.userId;
 
     // Validation
     if (!title || !title.trim()) {
@@ -162,10 +160,10 @@ export const updateSubtask = async (req: Request, res: Response) => {
  * DELETE SUBTASK
  * Subtask delete karta
  */
-export const deleteSubtask = async (req: Request, res: Response) => {
+export const deleteSubtask = async (req: AuthRequest, res: Response) => {
   try {
     const { taskId, subtaskId } = req.params;
-    const userId = req.user?._id;
+    const userId = req.userId;
 
     // Check if task belongs to user
     const task = await Task.findOne({ _id: taskId, userId });

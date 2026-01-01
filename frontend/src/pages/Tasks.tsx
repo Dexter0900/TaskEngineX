@@ -14,6 +14,8 @@ import { getAllTasks, createTask, updateTask, deleteTask } from "../api/taskApi"
 import type { Task } from "../types";
 import Layout from "../components/Layout";
 import SubtaskList from "../components/SubtaskList";
+import { useAuth } from "../context/AuthContext";
+import { useTaskSocket } from "../hooks/useTaskSocket";
 import toast from "react-hot-toast";
 
 type TaskFormData = {
@@ -25,18 +27,19 @@ type TaskFormData = {
 };
 
 export default function Tasks() {
+  const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [expandedTask, setExpandedTask] = useState<string | null>(null);
-  
+
   // Filters
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("createdAt");
-  
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const tasksPerPage = 10;
@@ -47,6 +50,30 @@ export default function Tasks() {
     status: "pending",
     priority: "medium",
     dueDate: "",
+  });
+
+  // Socket handlers
+  const { emitTaskEvent } = useTaskSocket({
+    onTaskCreated: (data) => {
+      if (data.userId !== user?.id) {
+        setTasks((prev) => [data, ...prev]);
+        toast("New task created!", { icon: "✨" });
+      }
+    },
+    onTaskUpdated: (data) => {
+      if (data.userId !== user?.id) {
+        setTasks((prev) =>
+          prev.map((t) => (t._id === data.taskId ? { ...t, ...data } : t))
+        );
+        toast("Task updated!", { icon: "✏️" });
+      }
+    },
+    onTaskDeleted: (data) => {
+      if (data.userId !== user?.id) {
+        setTasks((prev) => prev.filter((t) => t._id !== data.taskId));
+        toast("Task deleted!", { icon: "🗑️" });
+      }
+    },
   });
 
   useEffect(() => {
@@ -105,10 +132,18 @@ export default function Tasks() {
       if (editingTask) {
         const response = await updateTask(editingTask._id, formData);
         setTasks(tasks.map((t) => (t._id === editingTask._id ? response.task : t)));
+        emitTaskEvent("task:update", {
+          taskId: editingTask._id,
+          userId: user?.id,
+        });
         toast.success("Task updated!");
       } else {
         const response = await createTask(formData);
         setTasks([response.task, ...tasks]);
+        emitTaskEvent("task:create", {
+          taskId: response.task._id,
+          userId: user?.id,
+        });
         toast.success("Task created!");
       }
       handleCloseModal();
@@ -121,6 +156,10 @@ export default function Tasks() {
     try {
       await deleteTask(taskId);
       setTasks(tasks.filter((t) => t._id !== taskId));
+      emitTaskEvent("task:delete", {
+        taskId,
+        userId: user?.id,
+      });
       toast.success("Task deleted!");
       setDeleteConfirm(null);
     } catch (error) {
@@ -442,8 +481,8 @@ export default function Tasks() {
 
                   {/* Description */}
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                      <FiAlignLeft className="w-4 h-4" />
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      <FiAlignLeft className="w-4 h-4 inline mr-2" />
                       Description
                     </label>
                     <textarea
@@ -480,8 +519,8 @@ export default function Tasks() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                        <FiFlag className="w-4 h-4" />
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        <FiFlag className="w-4 h-4 inline mr-2" />
                         Priority
                       </label>
                       <select
@@ -503,8 +542,8 @@ export default function Tasks() {
 
                   {/* Due Date */}
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                      <FiCalendar className="w-4 h-4" />
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      <FiCalendar className="w-4 h-4 inline mr-2" />
                       Due Date
                     </label>
                     <input
