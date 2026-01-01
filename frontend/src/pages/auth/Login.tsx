@@ -6,7 +6,6 @@ import { FcGoogle } from "react-icons/fc";
 import { login, loginWithGoogle } from "../../api/authApi";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
-import Button from "../../components/ui/Button";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -32,9 +31,9 @@ export default function Login() {
     setLoading(true);
     try {
       const response = await login(formData);
-      
+
       authLogin(response.token, response.user);
-      
+
       toast.success("Login successful!");
       navigate("/dashboard");
     } catch (error: any) {
@@ -58,23 +57,31 @@ export default function Login() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md w-full"
       >
-        {/* Header */}
+        {/* Title */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome Back</h1>
-          <p className="text-muted-foreground">Sign in to continue to your tasks</p>
+          <h1 className="text-3xl font-semibold text-foreground mb-2">
+            TaskEngineX
+          </h1>
         </div>
-
         {/* Card */}
         <div className="bg-card border border-border rounded-2xl shadow-lg p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-semibold text-foreground mb-2">
+              Welcome Back
+            </h1>
+            <p className="text-muted-foreground">
+              Sign in to continue to your tasks
+            </p>
+          </div>
           {/* Google Button */}
-          <Button
+          <button
             onClick={loginWithGoogle}
-            variant="outline"
-            className="w-full mb-6"
+            className="w-full flex items-center justify-center py-3 px-4 mb-6 border border-border rounded-lg hover:bg-accent transition-colors"
           >
             <FcGoogle className="w-5 h-5 mr-2" />
             Continue with Google
-          </Button>
+          </button>
 
           {/* Divider */}
           <div className="flex items-center gap-4 mb-6">
@@ -124,14 +131,15 @@ export default function Login() {
             </div>
 
             {/* Submit Button */}
-            <Button
+            <button
               type="submit"
               disabled={loading}
-              isLoading={loading}
-              className="w-full"
+              className={`w-full py-3 px-4 bg-rose-800 text-white font-medium rounded-lg hover:bg-rose-900 hover:shadow-lg transition-colors ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              Sign In
-            </Button>
+              {loading ? "Logging in..." : "Login"}
+            </button>
           </form>
 
           {/* Footer */}

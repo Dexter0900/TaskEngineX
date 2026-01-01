@@ -54,7 +54,7 @@ export default function Dashboard() {
     try {
       // OpenWeatherMap free API (replace with your API key)
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=Delhi&appid=YOUR_API_KEY&units=metric`
+        `https://api.openweathermap.org/data/2.5/weather?q=Delhi&appid=3b59f4d88622529f43723ea4123d29e7&units=metric`
       );
       const data = await response.json();
       setWeather(data);
@@ -113,7 +113,7 @@ export default function Dashboard() {
                 <p className="text-sm text-muted-foreground">Total Tasks</p>
                 <p className="text-3xl font-bold text-foreground mt-2">{stats?.total || 0}</p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
                 <FiTrendingUp className="text-blue-600 dark:text-blue-400" size={24} />
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function Dashboard() {
                 <p className="text-sm text-muted-foreground">Pending</p>
                 <p className="text-3xl font-bold text-foreground mt-2">{stats?.pending || 0}</p>
               </div>
-              <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900 rounded-lg flex items-center justify-center">
                 <FiClock className="text-amber-600 dark:text-amber-400" size={24} />
               </div>
             </div>
@@ -147,7 +147,7 @@ export default function Dashboard() {
                 <p className="text-sm text-muted-foreground">In Progress</p>
                 <p className="text-3xl font-bold text-foreground mt-2">{stats?.inProgress || 0}</p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
                 <FiAlertCircle className="text-purple-600 dark:text-purple-400" size={24} />
               </div>
             </div>
@@ -164,7 +164,7 @@ export default function Dashboard() {
                 <p className="text-sm text-muted-foreground">Completed</p>
                 <p className="text-3xl font-bold text-foreground mt-2">{stats?.completed || 0}</p>
               </div>
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
                 <FiCheckCircle className="text-green-600 dark:text-green-400" size={24} />
               </div>
             </div>

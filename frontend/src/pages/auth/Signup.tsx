@@ -5,7 +5,6 @@ import { FiMail, FiLock, FiUser, FiCheckCircle } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
 import { signup, loginWithGoogle } from "../../api/authApi";
 import toast from "react-hot-toast";
-import Button from "../../components/ui/Button";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -24,8 +23,13 @@ export default function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
+
+    if (
+      !formData.email ||
+      !formData.password ||
+      !formData.firstName ||
+      !formData.lastName
+    ) {
       toast.error("All fields are required");
       return;
     }
@@ -63,20 +67,25 @@ export default function Signup() {
           >
             <FiCheckCircle className="w-10 h-10 text-primary" />
           </motion.div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">Check Your Email!</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">
+            Check Your Email!
+          </h2>
           <p className="text-muted-foreground mb-6">
-            We've sent a verification link to <span className="font-semibold text-foreground">{formData.email}</span>
+            We've sent a verification link to{" "}
+            <span className="font-semibold text-foreground">
+              {formData.email}
+            </span>
           </p>
           <p className="text-sm text-muted-foreground mb-6">
-            Click the link in the email to complete your registration. The link will expire in 15 minutes.
+            Click the link in the email to complete your registration. The link
+            will expire in 15 minutes.
           </p>
-          <Button
+          <button
             onClick={() => navigate("/login")}
-            variant="secondary"
-            className="w-full"
+            className="mt-4 w-full py-3 px-4 bg-rose-800 text-white font-medium rounded-lg hover:bg-rose-900 hover:shadow-lg transition-colors"
           >
             Back to Login
-          </Button>
+          </button>
         </motion.div>
       </div>
     );
@@ -91,21 +100,24 @@ export default function Signup() {
       >
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Create Account</h1>
-          <p className="text-muted-foreground">Start managing your tasks efficiently</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Create Account
+          </h1>
+          <p className="text-muted-foreground">
+            Start managing your tasks efficiently
+          </p>
         </div>
 
         {/* Card */}
         <div className="bg-card border border-border rounded-2xl shadow-lg p-8">
           {/* Google Button */}
-          <Button
+          <button
             onClick={loginWithGoogle}
-            variant="outline"
-            className="w-full mb-6"
+            className="w-full mb-6 flex items-center justify-center gap-2 px-4 py-3 border border-border rounded-lg hover:bg-accent transition-colors"
           >
             <FcGoogle className="w-5 h-5 mr-2" />
             Continue with Google
-          </Button>
+          </button>
 
           {/* Divider */}
           <div className="flex items-center gap-4 mb-6">
@@ -196,14 +208,15 @@ export default function Signup() {
               </p>
             </div>
 
-            <Button
+            <button
               type="submit"
               disabled={loading}
-              isLoading={loading}
-              className="w-full"
+              className={`w-full py-3 px-4 bg-rose-800 text-white font-medium rounded-lg hover:bg-rose-900 hover:shadow-lg transition-colors ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              Create Account
-            </Button>
+              {loading ? "Signing Up..." : "Sign Up"}
+            </button>
           </form>
 
           {/* Footer */}

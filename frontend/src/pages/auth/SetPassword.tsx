@@ -5,7 +5,7 @@ import { FiLock, FiUser } from "react-icons/fi";
 import { setPassword } from "../../api/authApi";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
-import Button from "../../components/ui/Button";
+
 
 export default function SetPassword() {
   const navigate = useNavigate();
@@ -154,14 +154,15 @@ export default function SetPassword() {
             </div>
 
             {/* Submit Button */}
-            <Button
+            <button
               type="submit"
               disabled={loading}
-              isLoading={loading}
-              className="w-full"
+              className={`w-full py-3 px-4 bg-rose-800 text-white font-medium rounded-lg hover:bg-rose-900 hover:shadow-lg transition-colors ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              Set Password
-            </Button>
+              {loading ? "Setting Password..." : "Set Password"}
+            </button>
           </form>
 
           {/* Footer */}
