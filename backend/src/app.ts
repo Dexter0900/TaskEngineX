@@ -3,7 +3,8 @@ import express from "express";
 import cors from "cors";
 import passport from "./config/passport.js";
 import authRoutes from "./routes/authRoutes.js";
-import taskRoutes from "./routes/taskRoutes.js";  // NEW - Task routes import
+import taskRoutes from "./routes/taskRoutes.js";
+import subtaskRoutes from "./routes/subtaskRoutes.js";
 import { ENV } from "./config/env.js";
 
 const app = express();
@@ -80,9 +81,17 @@ app.use("/api/auth", authRoutes);
  *   DELETE /api/tasks/:id             - Delete task
  *   PATCH  /api/tasks/:id/toggle      - Toggle task status
  * 
+ * Subtask endpoints:
+ *   GET    /api/tasks/:taskId/subtasks                  - Get all subtasks
+ *   POST   /api/tasks/:taskId/subtasks                  - Create subtask
+ *   PATCH  /api/tasks/:taskId/subtasks/:subtaskId/toggle - Toggle subtask
+ *   PUT    /api/tasks/:taskId/subtasks/:subtaskId       - Update subtask
+ *   DELETE /api/tasks/:taskId/subtasks/:subtaskId       - Delete subtask
+ * 
  * Note: Saari routes protected hain (JWT required)
  */
-app.use("/api/tasks", taskRoutes);  // NEW - Task routes register
+app.use("/api/tasks", taskRoutes);
+app.use("/api/tasks", subtaskRoutes);
 
 // ============================================
 // ERROR HANDLING
