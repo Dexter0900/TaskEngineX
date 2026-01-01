@@ -274,7 +274,8 @@ export default function Tasks() {
                 className="bg-card border border-border hover:border-primary-500 rounded-xl p-6 transition-all"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div
+                  <div className="flex-1">
+                    <div
                       className="cursor-pointer"
                       onClick={() =>
                         setExpandedTask(expandedTask === task._id ? null : task._id)
@@ -313,18 +314,20 @@ export default function Tasks() {
                     </div>
 
                     {/* Subtasks - Expanded */}
-                    {expandedTask === task._id && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="border-t border-border mt-4 pt-4"
-                      >
-                        <SubtaskList taskId={task._id} />
-                      </motion.div>
-                    )}
-                    </div>
+                    <AnimatePresence>
+                      {expandedTask === task._id && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="border-t border-border mt-4 pt-4"
+                        >
+                          <SubtaskList taskId={task._id} />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
+
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleOpenModal(task)}
