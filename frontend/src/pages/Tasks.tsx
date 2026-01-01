@@ -196,22 +196,22 @@ export default function Tasks() {
   const totalPages = Math.ceil(sortedTasks.length / tasksPerPage);
 
   const statusColors = {
-    pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-    "in-progress": "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-    completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+    pending: "bg-amber-900/30 text-amber-400",
+    "in-progress": "bg-purple-900/30 text-purple-400",
+    completed: "bg-green-900/30 text-green-400",
   };
 
   const priorityColors = {
-    low: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-    medium: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-    high: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+    low: "bg-blue-900/30 text-blue-400",
+    medium: "bg-yellow-900/30 text-yellow-400",
+    high: "bg-red-900/30 text-red-400",
   };
 
   if (loading) {
     return (
       <Layout>
         <div className="flex items-center justify-center h-96">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-800"></div>
         </div>
       </Layout>
     );
@@ -230,7 +230,7 @@ export default function Tasks() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => handleOpenModal()}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-primary-foreground rounded-lg font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-rose-700 hover:bg-primary-800 text-primary-foreground rounded-lg font-medium transition-colors"
           >
             <FiPlus className="w-5 h-5" />
             New Task
@@ -373,14 +373,14 @@ export default function Tasks() {
                       className="p-2 hover:bg-accent rounded-lg transition-colors"
                       title="Edit task"
                     >
-                      <FiEdit2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                      <FiEdit2 className="w-5 h-5 text-blue-400" />
                     </button>
                     <button
                       onClick={() => setDeleteConfirm(task._id)}
                       className="p-2 hover:bg-accent rounded-lg transition-colors"
                       title="Delete task"
                     >
-                      <FiTrash2 className="w-5 h-5 text-red-600 dark:text-red-400" />
+                      <FiTrash2 className="w-5 h-5 text-red-400" />
                     </button>
                   </div>
                 </div>
@@ -406,7 +406,7 @@ export default function Tasks() {
                   onClick={() => setCurrentPage(page)}
                   className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
                     currentPage === page
-                      ? "bg-primary-600 text-primary-foreground"
+                      ? "bg-rose-800 text-primary-foreground"
                       : "bg-card border border-border hover:bg-accent"
                   }`}
                 >
@@ -562,7 +562,7 @@ export default function Tasks() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       type="submit"
-                      className="flex-1 py-3 bg-primary-600 hover:bg-primary-700 text-primary-foreground rounded-lg font-medium transition-colors"
+                      className="flex-1 py-3 bg-rose-800 hover:bg-rose-900 text-primary-foreground rounded-lg font-medium transition-colors"
                     >
                       {editingTask ? "Update Task" : "Create Task"}
                     </motion.button>

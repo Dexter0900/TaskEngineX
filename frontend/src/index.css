@@ -1,48 +1,11 @@
 @import "tailwindcss";
 
-/* Custom theme variables using CSS variables */
+/* Dark mode permanent theme variables */
 @layer theme {
   :root {
-    /* Orange Primary Colors */
-    --color-primary-50: oklch(0.98 0.01 50);
-    --color-primary-100: oklch(0.95 0.03 50);
-    --color-primary-200: oklch(0.88 0.08 50);
-    --color-primary-300: oklch(0.80 0.15 50);
-    --color-primary-400: oklch(0.72 0.20 40);
-    --color-primary-500: oklch(0.68 0.21 35);
-    --color-primary-600: oklch(0.62 0.22 30);
-    --color-primary-700: oklch(0.50 0.18 30);
-    --color-primary-800: oklch(0.42 0.15 30);
-    --color-primary-900: oklch(0.35 0.12 30);
-    --color-primary-950: oklch(0.25 0.08 30);
-
-    /* Light theme */
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.15 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.15 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.15 0 0);
-    --primary: oklch(0.68 0.21 35);
-    --primary-foreground: oklch(0.98 0 0);
-    --secondary: oklch(0.96 0 0);
-    --secondary-foreground: oklch(0.20 0 0);
-    --muted: oklch(0.96 0 0);
-    --muted-foreground: oklch(0.50 0 0);
-    --accent: oklch(0.96 0 0);
-    --accent-foreground: oklch(0.20 0 0);
-    --destructive: oklch(0.60 0.25 25);
-    --destructive-foreground: oklch(0.98 0 0);
-    --border: oklch(0.90 0 0);
-    --input: oklch(0.90 0 0);
-    --ring: oklch(0.68 0.21 35);
-    --radius: 0.5rem;
-  }
-
-  .dark {
     --background: oklch(0.15 0 0);
     --foreground: oklch(0.98 0 0);
-    --card: oklch(0.15 0 0);
+    --card: oklch(0.18 0 0);
     --card-foreground: oklch(0.98 0 0);
     --popover: oklch(0.15 0 0);
     --popover-foreground: oklch(0.98 0 0);
@@ -59,6 +22,7 @@
     --border: oklch(0.25 0 0);
     --input: oklch(0.25 0 0);
     --ring: oklch(0.68 0.21 35);
+    --radius: 0.5rem;
   }
 }
 

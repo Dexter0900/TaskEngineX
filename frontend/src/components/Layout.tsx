@@ -5,15 +5,12 @@ import {
   FiHome,
   FiCheckSquare,
   FiLogOut,
-  FiSun,
-  FiMoon,
   FiMenu,
   FiX,
   FiSettings,
   FiUser,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
 import { logout } from "../api/authApi";
 import toast from "react-hot-toast";
 
@@ -23,7 +20,6 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const { user, logout: authLogout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -60,33 +56,22 @@ export default function Layout({ children }: LayoutProps) {
             </button>
 
             <Link to="/dashboard" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-rose-800 rounded-lg flex items-center justify-center">
                 <FiCheckSquare className="text-white" size={18} />
               </div>
               <span className="font-bold text-lg hidden sm:inline">TaskEngineX</span>
             </Link>
           </div>
 
-          {/* Right: Theme Toggle + User Menu */}
+          {/* Right: User Menu */}
           <div className="flex items-center gap-2">
-            {/* Theme Toggle */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={toggleTheme}
-              className="p-2 hover:bg-accent rounded-lg transition-colors"
-              aria-label="Toggle theme"
-            >
-              {theme === "light" ? <FiMoon size={20} /> : <FiSun size={20} />}
-            </motion.button>
-
             {/* User Menu */}
             <div className="relative">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-lg transition-colors"
               >
-                <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                <div className="w-8 h-8 bg-rose-800 rounded-full flex items-center justify-center text-sm font-medium">
                   {user?.firstName?.[0]?.toUpperCase() || "U"}
                 </div>
                 <span className="hidden sm:inline text-sm font-medium">
@@ -168,7 +153,7 @@ export default function Layout({ children }: LayoutProps) {
                   to={item.path}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                     isActive
-                      ? "bg-primary-600 text-primary-foreground shadow-md"
+                      ? "bg-rose-800 text-primary-foreground shadow-md"
                       : "hover:bg-accent text-foreground"
                   }`}
                 >
@@ -206,7 +191,7 @@ export default function Layout({ children }: LayoutProps) {
                         onClick={() => setSidebarOpen(false)}
                         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                           isActive
-                            ? "bg-primary-600 text-primary-foreground shadow-md"
+                            ? "bg-rose-800 text-primary-foreground shadow-md"
                             : "hover:bg-accent text-foreground"
                         }`}
                       >
