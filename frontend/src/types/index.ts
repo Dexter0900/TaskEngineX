@@ -109,6 +109,8 @@ export interface TaskStatsResponse {
     pending: number;
     inProgress: number;
     completed: number;
+    lowPriority: number;
+    mediumPriority: number;
     highPriority: number;
   };
 }
