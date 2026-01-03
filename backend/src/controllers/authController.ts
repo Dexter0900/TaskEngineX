@@ -4,6 +4,7 @@ import { generateToken, generateMagicLinkToken, verifyMagicLinkToken } from "../
 import { sendMagicLink } from "../utils/email.js";
 import { AuthRequest } from "../middlewares/auth.js";
 import bcrypt from "bcryptjs";
+import { ENV } from "../config/env.js";
 
 // Google OAuth callback
 export const googleCallback = async (req: Request, res: Response) => {
@@ -11,7 +12,7 @@ export const googleCallback = async (req: Request, res: Response) => {
     const user = req.user as any;
 
     if (!user) {
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/error`);
+      return res.redirect(`${ENV.FRONTEND_URL}/auth/error`);
     }
 
     // Generate JWT
@@ -21,10 +22,10 @@ export const googleCallback = async (req: Request, res: Response) => {
     });
 
     // Redirect to frontend with token
-    res.redirect(`${process.env.FRONTEND_URL}/auth/success?token=${token}`);
+    res.redirect(`${ENV.FRONTEND_URL}/auth/success?token=${token}`);
   } catch (error) {
     console.error("Google callback error:", error);
-    res.redirect(`${process.env.FRONTEND_URL}/auth/error`);
+    res.redirect(`${ENV.FRONTEND_URL}/auth/error`);
   }
 };
 
