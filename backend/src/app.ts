@@ -18,10 +18,27 @@ const app = express();
  * Origin: Kaunsi URL se requests allowed hain
  * Credentials: Cookies/auth headers allow karo
  */
-app.use(cors({
-  origin: ENV.FRONTEND_URL,
-  credentials: true,
-}));
+
+const allowedOrigins = [
+  ENV.FRONTEND_URL,           // https://task-engine-x.vercel.app
+  "http://localhost:5173",    // local frontend
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Postman / server-to-server requests
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
+  })
+);
 
 /**
  * Body Parsers
