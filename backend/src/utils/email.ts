@@ -2,26 +2,35 @@ import nodemailer from "nodemailer";
 import { ENV } from "../config/env.js";
 
 // Create transporter with error handling
-let transporter: nodemailer.Transporter;
+let transporter: nodemailer.Transporter | null = null;
 
-try {
-  transporter = nodemailer.createTransport({
-    host: ENV.EMAIL_HOST,
-    port: ENV.EMAIL_PORT,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: ENV.EMAIL_USER,
-      pass: ENV.EMAIL_PASSWORD,
-    },
-  });
-  
-  console.log("✅ Email transporter initialized");
-} catch (error) {
-  console.error("❌ Email transporter initialization failed:", error);
-  throw error;
+if (ENV.EMAIL_USER && ENV.EMAIL_PASSWORD) {
+  try {
+    transporter = nodemailer.createTransport({
+      host: ENV.EMAIL_HOST,
+      port: ENV.EMAIL_PORT,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: ENV.EMAIL_USER,
+        pass: ENV.EMAIL_PASSWORD,
+      },
+    });
+    
+    console.log("✅ Email transporter initialized");
+  } catch (error) {
+    console.error("❌ Email transporter initialization failed:", error);
+  }
+} else {
+  console.warn("⚠️ Email credentials not configured - email sending will be disabled");
 }
 
 export const sendMagicLink = async (email: string, token: string) => {
+  // Check if email is configured
+  if (!transporter) {
+    console.warn("⚠️ Email not configured - skipping email send");
+    return;
+  }
+
   const magicLink = `${ENV.FRONTEND_URL}/auth/verify?token=${token}`;
 
   const mailOptions = {

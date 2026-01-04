@@ -28,8 +28,8 @@ export const ENV = {
   // Email (for magic link)
   EMAIL_HOST: process.env.EMAIL_HOST || "smtp.gmail.com",
   EMAIL_PORT: parseInt(process.env.EMAIL_PORT || "587"),
-  EMAIL_USER: getRequiredEnv("EMAIL_USER"),
-  EMAIL_PASSWORD: getRequiredEnv("EMAIL_PASSWORD"),
+  EMAIL_USER: process.env.EMAIL_USER || "",
+  EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
   EMAIL_FROM: process.env.EMAIL_FROM || "noreply@taskengine.com",
   
   // Magic Link
