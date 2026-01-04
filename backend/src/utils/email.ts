@@ -25,10 +25,12 @@ if (ENV.EMAIL_USER && ENV.EMAIL_PASSWORD) {
 }
 
 export const sendMagicLink = async (email: string, token: string) => {
+  console.log("📧 sendMagicLink called for:", email);
+  
   // Check if email is configured
   if (!transporter) {
-    console.warn("⚠️ Email not configured - skipping email send");
-    return;
+    console.warn("⚠️ Email not configured - cannot send email");
+    return; // Don't throw, just return - caller will handle
   }
 
   const magicLink = `${ENV.FRONTEND_URL}/auth/verify?token=${token}`;
