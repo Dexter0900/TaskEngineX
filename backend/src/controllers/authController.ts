@@ -84,15 +84,29 @@ export const signup = async (req: Request, res: Response) => {
     });
 
     // Send magic link email
-    await sendMagicLink(email, token);
-
-    res.json({
-      message: "Verification email sent! Please check your email to complete registration.",
-      success: true,
-    });
+    try {
+      await sendMagicLink(email, token);
+      
+      res.json({
+        message: "Verification email sent! Please check your email to complete registration.",
+        success: true,
+      });
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError);
+      
+      // Email failed but return helpful error
+      return res.status(500).json({ 
+        message: "Failed to send verification email. Please contact support or try again later.",
+        error: "EMAIL_SEND_FAILED",
+        details: ENV.NODE_ENV === "development" ? (emailError as Error).message : undefined
+      });
+    }
   } catch (error) {
     console.error("Signup error:", error);
-    res.status(500).json({ message: "Failed to send verification email" });
+    res.status(500).json({ 
+      message: "An error occurred during signup. Please try again.",
+      error: ENV.NODE_ENV === "development" ? (error as Error).message : undefined
+    });
   }
 };
 
