@@ -9,14 +9,16 @@ if (ENV.EMAIL_USER && ENV.EMAIL_PASSWORD) {
     transporter = nodemailer.createTransport({
       host: ENV.EMAIL_HOST,
       port: ENV.EMAIL_PORT,
-      secure: false, // true for 465, false for other ports
+      secure: true, // true for 465 and 587, false only for 25 (SMTP)
       auth: {
         user: ENV.EMAIL_USER,
         pass: ENV.EMAIL_PASSWORD,
       },
+      connectionTimeout: 10000, // 10 seconds
+      socketTimeout: 10000,
     });
     
-    console.log("✅ Email transporter initialized");
+    console.log("✅ Email transporter initialized with secure connection");
   } catch (error) {
     console.error("❌ Email transporter initialization failed:", error);
   }
