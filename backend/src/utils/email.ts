@@ -1,15 +1,25 @@
 import nodemailer from "nodemailer";
 import { ENV } from "../config/env.js";
 
-const transporter = nodemailer.createTransport({
-  host: ENV.EMAIL_HOST,
-  port: ENV.EMAIL_PORT,
-  secure: false,
-  auth: {
-    user: ENV.EMAIL_USER,
-    pass: ENV.EMAIL_PASSWORD,
-  },
-});
+// Create transporter with error handling
+let transporter: nodemailer.Transporter;
+
+try {
+  transporter = nodemailer.createTransport({
+    host: ENV.EMAIL_HOST,
+    port: ENV.EMAIL_PORT,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: ENV.EMAIL_USER,
+      pass: ENV.EMAIL_PASSWORD,
+    },
+  });
+  
+  console.log("✅ Email transporter initialized");
+} catch (error) {
+  console.error("❌ Email transporter initialization failed:", error);
+  throw error;
+}
 
 export const sendMagicLink = async (email: string, token: string) => {
   const magicLink = `${ENV.FRONTEND_URL}/auth/verify?token=${token}`;

@@ -17,11 +17,14 @@ const app = express();
  * CORS - Frontend ko backend access dene ke liye
  * Origin: Kaunsi URL se requests allowed hain
  * Credentials: Cookies/auth headers allow karo
+ * Methods: Allowed HTTP methods
+ * AllowedHeaders: Allowed request headers
  */
 
 const allowedOrigins = [
-  ENV.FRONTEND_URL,           // https://task-engine-x.vercel.app
-  "http://localhost:5173",    // local frontend
+  ENV.FRONTEND_URL,           // Production frontend URL
+  "http://localhost:5173",    // Local development
+  "http://localhost:5174",    // Alternative local port
 ].filter(Boolean);
 
 app.use(
@@ -30,13 +33,24 @@ app.use(
       // Postman / server-to-server requests
       if (!origin) return callback(null, true);
 
+      // Check if origin is in allowed list
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
+      // Allow Vercel preview deployments (dexter0900s-projects.vercel.app)
+      if (origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+
+      // Block all other origins
       return callback(new Error(`CORS blocked for origin: ${origin}`));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["set-cookie"],
+    optionsSuccessStatus: 200
   })
 );
 

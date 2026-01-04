@@ -26,7 +26,22 @@ interface TaskEventData {
 export const initializeSocket = (httpServer: HTTPServer): Server => {
   const io = new Server(httpServer, {
     cors: {
-      origin: ENV.FRONTEND_URL,
+      origin: (origin, callback) => {
+        // Allow no origin (for server-to-server)
+        if (!origin) return callback(null, true);
+
+        // Allow localhost
+        if (origin.startsWith('http://localhost:')) return callback(null, true);
+
+        // Allow Vercel preview and production deployments
+        if (origin.endsWith('.vercel.app')) return callback(null, true);
+
+        // Allow production frontend URL
+        if (origin === ENV.FRONTEND_URL) return callback(null, true);
+
+        // Block all other origins
+        callback(new Error('CORS blocked'));
+      },
       credentials: true,
     },
     transports: ["websocket", "polling"],
