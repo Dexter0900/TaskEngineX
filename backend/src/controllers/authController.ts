@@ -31,11 +31,15 @@ export const googleCallback = async (req: Request, res: Response) => {
 
 // Signup with email and password - sends magic link for verification
 export const signup = async (req: Request, res: Response) => {
+  console.log("🚀 [SIGNUP] Starting signup request");
+  
   try {
     const { email, password, firstName, lastName } = req.body;
+    console.log("📝 [SIGNUP] Data received:", { email, firstName, lastName, passwordLength: password?.length });
 
     // Validation
     if (!email || !password || !firstName || !lastName) {
+      console.warn("⚠️ [SIGNUP] Missing required fields");
       return res.status(400).json({ 
         message: "Email, password, first name, and last name are required" 
       });
@@ -44,19 +48,24 @@ export const signup = async (req: Request, res: Response) => {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.warn("⚠️ [SIGNUP] Invalid email format:", email);
       return res.status(400).json({ message: "Invalid email format" });
     }
 
     // Validate password length
     if (password.length < 8) {
+      console.warn("⚠️ [SIGNUP] Password too short:", password.length);
       return res.status(400).json({ 
         message: "Password must be at least 8 characters long" 
       });
     }
 
+    console.log("✅ [SIGNUP] Validation passed");
+    
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      console.warn("⚠️ [SIGNUP] User already exists:", email);
       // If user has password, they already signed up with email
       if (existingUser.password) {
         return res.status(400).json({ 
@@ -73,9 +82,11 @@ export const signup = async (req: Request, res: Response) => {
     }
 
     // Hash password
+    console.log("🔐 [SIGNUP] Hashing password...");
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate magic link token with user data
+    console.log("🎫 [SIGNUP] Generating magic link token...");
     const token = generateMagicLinkToken({
       email,
       firstName,
@@ -84,15 +95,17 @@ export const signup = async (req: Request, res: Response) => {
     });
 
     // Send magic link email
+    console.log("📧 [SIGNUP] Sending magic link email to:", email);
     try {
       await sendMagicLink(email, token);
+      console.log("✅ [SIGNUP] Email sent successfully or skipped (email not configured)");
       
       res.json({
         message: "Verification email sent! Please check your email to complete registration.",
         success: true,
       });
     } catch (emailError) {
-      console.error("Email sending failed:", emailError);
+      console.error("❌ [SIGNUP] Email sending failed:", emailError);
       
       // Email failed but return helpful error
       return res.status(500).json({ 
@@ -102,7 +115,7 @@ export const signup = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    console.error("Signup error:", error);
+    console.error("❌ [SIGNUP] Unexpected error:", error);
     res.status(500).json({ 
       message: "An error occurred during signup. Please try again.",
       error: ENV.NODE_ENV === "development" ? (error as Error).message : undefined
