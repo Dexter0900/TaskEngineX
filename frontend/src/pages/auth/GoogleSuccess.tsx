@@ -20,7 +20,6 @@ const GoogleSuccess = () => {
   useEffect(() => {
     const handleGoogleCallback = async () => {
       try {
-        // URL se token lo
         const token = searchParams.get("token");
 
         if (!token) {
@@ -30,20 +29,12 @@ const GoogleSuccess = () => {
         }
 
         console.log("🔵 Google OAuth token received");
-
-        // Token se user data fetch karo
-        // (Token already localStorage mein nahi hai, manually set karna padega)
         localStorage.setItem("token", token);
 
-        // User data fetch karo
         const user = await getCurrentUser();
-
-        // Auth context update
         login(token, user);
 
         console.log("✅ Google login successful");
-
-        // Dashboard redirect
         navigate("/dashboard", { replace: true });
       } catch (error) {
         console.error("❌ Google callback error:", error);
@@ -56,109 +47,40 @@ const GoogleSuccess = () => {
     handleGoogleCallback();
   }, [searchParams, login, navigate]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.5 } },
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-600 via-blue-500 to-purple-600 p-4">
+    <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4">
       <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
         className="w-full max-w-md"
       >
         {status === "loading" ? (
-          <motion.div
-            className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 text-center"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.4 }}
-          >
-            <motion.div
-              className="text-7xl mb-8 inline-block"
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            >
-              🔵
-            </motion.div>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-3xl font-bold text-gray-900 mb-2"
-            >
-              Signing You In
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-gray-600 text-base leading-relaxed mb-10"
-            >
-              {message}
-            </motion.p>
-            <motion.div
-              className="flex justify-center gap-3"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  className="w-3 h-3 rounded-full bg-linear-to-r from-blue-600 to-purple-600"
-                  animate={{ y: [0, -12, 0] }}
-                  transition={{
-                    duration: 0.6,
-                    repeat: Infinity,
-                    delay: i * 0.15,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
-            </motion.div>
-          </motion.div>
+          <div className="bg-zinc-900 rounded-xl p-8 sm:p-10 text-center border border-zinc-800">
+            <div className="mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-900">
+                <div className="w-8 h-8 border-3 border-zinc-800 border-t-white rounded-full animate-spin" />
+              </div>
+            </div>
+            <h2 className="text-2xl font-semibold text-white mb-3">Google Login</h2>
+            <p className="text-slate-300 text-sm leading-relaxed">{message}</p>
+          </div>
         ) : (
-          <motion.div
-            className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 text-center"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.4 }}
-          >
-            <motion.div
-              className="text-7xl mb-6 inline-block"
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 0.5, repeat: Infinity }}
+          <div className="bg-zinc-900 rounded-xl p-8 sm:p-10 text-center border border-zinc-800">
+            <div className="mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-900/30 border border-red-700/50">
+                <span className="text-3xl">!</span>
+              </div>
+            </div>
+            <h2 className="text-2xl font-semibold text-red-400 mb-3">Login Failed</h2>
+            <p className="text-slate-300 text-sm mb-6">{message}</p>
+            <button
+              onClick={() => navigate("/login")}
+              className="w-full px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg transition-colors duration-200"
             >
-              ⚠️
-            </motion.div>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-3xl font-bold text-red-600 mb-3"
-            >
-              Login Failed
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-gray-600 text-base leading-relaxed mb-6"
-            >
-              {message}
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-gray-500 text-sm font-medium"
-            >
-              Redirecting to login page...
-            </motion.p>
-          </motion.div>
+              Back to Login
+            </button>
+          </div>
         )}
       </motion.div>
     </div>

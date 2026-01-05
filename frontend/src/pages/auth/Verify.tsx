@@ -21,7 +21,6 @@ const Verify = () => {
 
   useEffect(() => {
     const verifyToken = async () => {
-      // URL se token lo
       const token = searchParams.get("token");
 
       if (!token) {
@@ -32,20 +31,13 @@ const Verify = () => {
 
       try {
         console.log("🔍 Verifying magic link token...");
-
-        // API call
         const response = await verifyMagicLink(token);
-
         console.log("✅ Magic link verified successfully");
 
-        // Auth context mein login karo
         login(response.token, response.user);
-
-        // Success state
         setStatus("success");
         setMessage("Login successful!");
 
-        // Countdown timer
         const timer = setInterval(() => {
           setCountdown((prev) => {
             if (prev <= 1) {
@@ -58,8 +50,6 @@ const Verify = () => {
         }, 1000);
       } catch (err: any) {
         console.error("❌ Magic link verification failed:", err);
-
-        // Error state
         setStatus("error");
         setMessage(
           err.response?.data?.message ||
@@ -71,159 +61,58 @@ const Verify = () => {
     verifyToken();
   }, [searchParams, login, navigate]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.5 } },
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-purple-600 via-pink-500 to-red-500 p-4">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
       <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
         className="w-full max-w-md"
       >
-        {/* Loading State */}
         {status === "loading" && (
-          <motion.div
-            className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 text-center"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.4 }}
-          >
-            <motion.div
-              className="text-7xl mb-6 inline-block"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            >
-              ⏳
-            </motion.div>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-3xl font-bold text-gray-900 mb-3"
-            >
-              Verifying Magic Link
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-gray-600 text-base leading-relaxed mb-8"
-            >
-              {message}
-            </motion.p>
-            <motion.div
-              className="flex justify-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <div className="flex gap-2">
-                {[0, 1, 2].map((i) => (
-                  <motion.div
-                    key={i}
-                    className="w-3 h-3 rounded-full bg-purple-600"
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.1 }}
-                  />
-                ))}
+          <div className="bg-slate-800 rounded-xl p-8 sm:p-10 text-center border border-slate-700">
+            <div className="mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-900">
+                <div className="w-8 h-8 border-3 border-zinc-800 border-t-white rounded-full animate-spin" />
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+            <h2 className="text-2xl font-semibold text-white mb-3">Verifying</h2>
+            <p className="text-slate-300 text-sm leading-relaxed">{message}</p>
+          </div>
         )}
 
-        {/* Success State */}
         {status === "success" && (
-          <motion.div
-            className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 text-center"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.4 }}
-          >
-            <motion.div
-              className="text-7xl mb-6 inline-block"
-              animate={{ scale: [1, 1.1, 1], opacity: [1, 0.8, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            >
-              ✅
-            </motion.div>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-3xl font-bold text-emerald-600 mb-3"
-            >
-              Welcome Back!
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-gray-600 text-base leading-relaxed mb-6"
-            >
-              {message}
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-gray-500 text-sm font-medium"
-            >
+          <div className="bg-zinc-900 rounded-xl p-8 sm:p-10 text-center border border-zinc-800">
+            <div className="mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-900/30 border border-emerald-700/50">
+                <span className="text-3xl">✓</span>
+              </div>
+            </div>
+            <h2 className="text-2xl font-semibold text-emerald-400 mb-3">Verified</h2>
+            <p className="text-slate-300 text-sm mb-6">{message}</p>
+            <p className="text-slate-400 text-xs">
               Redirecting in{" "}
-              <span className="font-bold text-purple-600 text-lg">{countdown}s</span>...
-            </motion.p>
-            <motion.div
-              className="mt-6 h-1 bg-linear-to-r from-purple-600 to-pink-600 rounded-full"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 3, ease: "linear" }}
-            />
-          </motion.div>
+              <span className="font-semibold text-white">{countdown}s</span>
+            </p>
+          </div>
         )}
 
-        {/* Error State */}
         {status === "error" && (
-          <motion.div
-            className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 text-center"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.4 }}
-          >
-            <motion.div
-              className="text-7xl mb-6 inline-block"
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 0.5, repeat: Infinity }}
-            >
-              ❌
-            </motion.div>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-3xl font-bold text-red-600 mb-3"
-            >
-              Verification Failed
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-gray-600 text-base leading-relaxed mb-8"
-            >
-              {message}
-            </motion.p>
-            <motion.button
+          <div className="bg-zinc-900 rounded-xl p-8 sm:p-10 text-center border border-zinc-800">
+            <div className="mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-900/30 border border-red-850/50">
+                <span className="text-3xl">!</span>
+              </div>
+            </div>
+            <h2 className="text-2xl font-semibold text-red-400 mb-3">Verification Failed</h2>
+            <p className="text-slate-300 text-sm mb-6">{message}</p>
+            <button
               onClick={() => navigate("/login")}
-              className="px-8 py-3 bg-linear-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
+              className="w-full px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-lg transition-colors duration-200"
             >
               Back to Login
-            </motion.button>
-          </motion.div>
+            </button>
+          </div>
         )}
       </motion.div>
     </div>
