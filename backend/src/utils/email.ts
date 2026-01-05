@@ -74,7 +74,10 @@ export const sendMagicLink = async (email: string, token: string) => {
       
       await sgMail.send({
         to: email,
-        from: ENV.EMAIL_FROM,
+        from: {
+          email: ENV.EMAIL_FROM,
+          name: "TaskEngineX Team"
+        },
         subject: "🔐 Your Magic Login Link",
         html: htmlContent,
       });
