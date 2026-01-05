@@ -76,7 +76,7 @@ const GoogleSuccess = () => {
             <p className="text-slate-300 text-sm mb-6">{message}</p>
             <button
               onClick={() => navigate("/login")}
-              className="w-full px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg transition-colors duration-200"
+              className="w-full px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-lg transition-colors duration-200"
             >
               Back to Login
             </button>

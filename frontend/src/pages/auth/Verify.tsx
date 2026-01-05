@@ -70,7 +70,7 @@ const Verify = () => {
         className="w-full max-w-md"
       >
         {status === "loading" && (
-          <div className="bg-slate-800 rounded-xl p-8 sm:p-10 text-center border border-slate-700">
+          <div className="bg-zinc-900 rounded-xl p-8 sm:p-10 text-center border border-zinc-800 ">
             <div className="mb-6">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-900">
                 <div className="w-8 h-8 border-3 border-zinc-800 border-t-white rounded-full animate-spin" />
