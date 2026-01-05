@@ -69,6 +69,9 @@ export const sendMagicLink = async (email: string, token: string) => {
     // Try SendGrid first
     if (USE_SENDGRID && sgMail) {
       console.log("📨 Sending via SendGrid...");
+      console.log("📧 From:", ENV.EMAIL_FROM);
+      console.log("📧 To:", email);
+      
       await sgMail.send({
         to: email,
         from: ENV.EMAIL_FROM,
@@ -95,8 +98,14 @@ export const sendMagicLink = async (email: string, token: string) => {
 
     await transporter.sendMail(mailOptions);
     console.log("✅ Email sent via Nodemailer to:", email);
-  } catch (error) {
+  } catch (error: any) {
     console.error("❌ Email send failed:", error);
+    
+    // Log SendGrid specific errors
+    if (error.response?.body?.errors) {
+      console.error("❌ SendGrid errors:", JSON.stringify(error.response.body.errors, null, 2));
+    }
+    
     throw new Error("Failed to send email");
   }
 };
