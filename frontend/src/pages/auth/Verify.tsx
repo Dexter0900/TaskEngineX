@@ -62,7 +62,7 @@ const Verify = () => {
   }, [searchParams, login, navigate]);
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -72,8 +72,8 @@ const Verify = () => {
         {status === "loading" && (
           <div className="bg-slate-800 rounded-xl p-8 sm:p-10 text-center border border-slate-700">
             <div className="mb-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-700">
-                <div className="w-8 h-8 border-3 border-slate-500 border-t-white rounded-full animate-spin" />
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-900">
+                <div className="w-8 h-8 border-3 border-zinc-800 border-t-white rounded-full animate-spin" />
               </div>
             </div>
             <h2 className="text-2xl font-semibold text-white mb-3">Verifying</h2>
@@ -82,7 +82,7 @@ const Verify = () => {
         )}
 
         {status === "success" && (
-          <div className="bg-slate-800 rounded-xl p-8 sm:p-10 text-center border border-slate-700">
+          <div className="bg-zinc-900 rounded-xl p-8 sm:p-10 text-center border border-zinc-800">
             <div className="mb-6">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-900/30 border border-emerald-700/50">
                 <span className="text-3xl">✓</span>
@@ -98,9 +98,9 @@ const Verify = () => {
         )}
 
         {status === "error" && (
-          <div className="bg-slate-800 rounded-xl p-8 sm:p-10 text-center border border-slate-700">
+          <div className="bg-zinc-900 rounded-xl p-8 sm:p-10 text-center border border-zinc-800">
             <div className="mb-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-900/30 border border-red-700/50">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-900/30 border border-red-850/50">
                 <span className="text-3xl">!</span>
               </div>
             </div>
@@ -108,7 +108,7 @@ const Verify = () => {
             <p className="text-slate-300 text-sm mb-6">{message}</p>
             <button
               onClick={() => navigate("/login")}
-              className="w-full px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg transition-colors duration-200"
+              className="w-full px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-lg transition-colors duration-200"
             >
               Back to Login
             </button>
