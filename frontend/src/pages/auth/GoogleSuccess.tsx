@@ -61,17 +61,8 @@ const GoogleSuccess = () => {
     visible: { opacity: 1, transition: { duration: 0.5 } },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
-
-  const bounceVariants = {
-    bounce: { y: [0, -10, 0], transition: { duration: 1, repeat: Infinity } },
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-600 via-blue-500 to-purple-600 p-4">
       <motion.div
         initial="hidden"
         animate="visible"
@@ -87,28 +78,37 @@ const GoogleSuccess = () => {
           >
             <motion.div
               className="text-7xl mb-8 inline-block"
-              variants={bounceVariants}
-              animate="bounce"
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 1, repeat: Infinity }}
             >
               🔵
             </motion.div>
             <motion.h2
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
               className="text-3xl font-bold text-gray-900 mb-2"
             >
               Signing You In
             </motion.h2>
             <motion.p
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               className="text-gray-600 text-base leading-relaxed mb-10"
             >
               {message}
             </motion.p>
-            <motion.div className="flex justify-center gap-3" variants={itemVariants}>
+            <motion.div
+              className="flex justify-center gap-3"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
-                  className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600"
+                  className="w-3 h-3 rounded-full bg-linear-to-r from-blue-600 to-purple-600"
                   animate={{ y: [0, -12, 0] }}
                   transition={{
                     duration: 0.6,
@@ -135,19 +135,25 @@ const GoogleSuccess = () => {
               ⚠️
             </motion.div>
             <motion.h2
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
               className="text-3xl font-bold text-red-600 mb-3"
             >
               Login Failed
             </motion.h2>
             <motion.p
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               className="text-gray-600 text-base leading-relaxed mb-6"
             >
               {message}
             </motion.p>
             <motion.p
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
               className="text-gray-500 text-sm font-medium"
             >
               Redirecting to login page...

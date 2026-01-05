@@ -76,25 +76,8 @@ const Verify = () => {
     visible: { opacity: 1, transition: { duration: 0.5 } },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
-
-  const spinVariants = {
-    rotate: { rotate: 360, transition: { duration: 2, repeat: Infinity, ease: "linear" } },
-  };
-
-  const pulseVariants = {
-    scale: [
-      { scale: 1, opacity: 1 },
-      { scale: 1.1, opacity: 0.8 },
-      { scale: 1, opacity: 1 },
-    ],
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-purple-600 via-pink-500 to-red-500 p-4">
       <motion.div
         initial="hidden"
         animate="visible"
@@ -111,26 +94,32 @@ const Verify = () => {
           >
             <motion.div
               className="text-7xl mb-6 inline-block"
-              variants={spinVariants}
-              animate="rotate"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             >
               ⏳
             </motion.div>
             <motion.h2
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
               className="text-3xl font-bold text-gray-900 mb-3"
             >
               Verifying Magic Link
             </motion.h2>
             <motion.p
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               className="text-gray-600 text-base leading-relaxed mb-8"
             >
               {message}
             </motion.p>
             <motion.div
               className="flex justify-center"
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
             >
               <div className="flex gap-2">
                 {[0, 1, 2].map((i) => (
@@ -156,33 +145,38 @@ const Verify = () => {
           >
             <motion.div
               className="text-7xl mb-6 inline-block"
-              variants={pulseVariants}
-              animate="scale"
+              animate={{ scale: [1, 1.1, 1], opacity: [1, 0.8, 1] }}
               transition={{ duration: 1, repeat: Infinity }}
             >
               ✅
             </motion.div>
             <motion.h2
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
               className="text-3xl font-bold text-emerald-600 mb-3"
             >
               Welcome Back!
             </motion.h2>
             <motion.p
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               className="text-gray-600 text-base leading-relaxed mb-6"
             >
               {message}
             </motion.p>
             <motion.p
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
               className="text-gray-500 text-sm font-medium"
             >
               Redirecting in{" "}
               <span className="font-bold text-purple-600 text-lg">{countdown}s</span>...
             </motion.p>
             <motion.div
-              className="mt-6 h-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full"
+              className="mt-6 h-1 bg-linear-to-r from-purple-600 to-pink-600 rounded-full"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 3, ease: "linear" }}
@@ -206,20 +200,24 @@ const Verify = () => {
               ❌
             </motion.div>
             <motion.h2
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
               className="text-3xl font-bold text-red-600 mb-3"
             >
               Verification Failed
             </motion.h2>
             <motion.p
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               className="text-gray-600 text-base leading-relaxed mb-8"
             >
               {message}
             </motion.p>
             <motion.button
               onClick={() => navigate("/login")}
-              className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+              className="px-8 py-3 bg-linear-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
