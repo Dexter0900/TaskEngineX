@@ -41,11 +41,11 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Thin Vertical Sidebar */}
-      <aside className="w-20 border-r border-border bg-card flex flex-col items-center py-6 gap-8 fixed h-screen">
+      <aside className="w-15 border-r border-border bg-card flex flex-col items-center py-6 gap-8 fixed h-screen">
         {/* Logo */}
         <Link
           to="/dashboard"
-          className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center hover:bg-primary/70 transition-colors group relative"
+          className="w-full h-12 bg-primary flex items-center justify-center hover:bg-primary/70 transition-colors group relative"
         >
           <span className="text-white font-bold text-lg">TX</span>
           <div className="absolute left-20 px-3 py-1 bg-accent text-foreground text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
