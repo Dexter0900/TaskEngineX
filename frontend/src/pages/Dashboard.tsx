@@ -67,7 +67,7 @@ export default function Dashboard() {
     return (
       <Layout>
         <div className="flex items-center justify-center h-96">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-800"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </Layout>
     );
@@ -218,7 +218,7 @@ export default function Dashboard() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="value" fill="#f97316" name="Tasks" />
+                <Bar dataKey="value" fill="var(--color-primary)" name="Tasks" />
               </BarChart>
             </ResponsiveContainer>
           </motion.div>
@@ -231,7 +231,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7 }}
-            className="bg-linear-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white"
+            className="bg-linear-to-br from-primary to-primary/50 rounded-xl p-6 text-white"
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Weather</h3>

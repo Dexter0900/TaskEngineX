@@ -109,7 +109,7 @@ export default function SubtaskList({ taskId }: SubtaskListProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-4">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-rose-800"></div>
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -129,7 +129,7 @@ export default function SubtaskList({ taskId }: SubtaskListProps) {
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progressPercentage}%` }}
-              className="bg-rose-800 h-2 rounded-full transition-all"
+              className="bg-primary h-2 rounded-full transition-all"
             />
           </div>
         </div>
@@ -186,8 +186,8 @@ export default function SubtaskList({ taskId }: SubtaskListProps) {
                     onClick={() => handleToggle(subtask._id)}
                     className={`shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
                       subtask.completed
-                        ? "bg-rose-800 border-rose-800"
-                        : "border-input hover:border-rose-800"
+                        ? "bg-primary border-primary"
+                        : "border-input hover:border-primary"
                     }`}
                   >
                     {subtask.completed && (
@@ -271,7 +271,7 @@ export default function SubtaskList({ taskId }: SubtaskListProps) {
       ) : (
         <button
           onClick={() => setIsAdding(true)}
-          className="flex items-center gap-2 text-sm text-rose-800 hover:text-rose-900 transition-colors"
+          className="flex items-center gap-2 text-sm text-primary hover:text-primary/90 transition-colors"
         >
           <FiPlus className="w-4 h-4" />
           <span>Add subtask</span>

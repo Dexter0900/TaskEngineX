@@ -76,7 +76,7 @@ function App() {
               },
               success: {
                 iconTheme: {
-                  primary: "#10b981",
+                  primary: "var(--color-primary)",
                   secondary: "#ffffff",
                 },
               },

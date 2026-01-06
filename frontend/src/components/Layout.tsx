@@ -45,7 +45,7 @@ export default function Layout({ children }: LayoutProps) {
         {/* Logo */}
         <Link
           to="/dashboard"
-          className="w-12 h-12 bg-rose-800 rounded-lg flex items-center justify-center hover:bg-rose-700 transition-colors group relative"
+          className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center hover:bg-primary/70 transition-colors group relative"
         >
           <span className="text-white font-bold text-lg">TX</span>
           <div className="absolute left-20 px-3 py-1 bg-accent text-foreground text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
@@ -64,7 +64,7 @@ export default function Layout({ children }: LayoutProps) {
                 key={item.path}
                 to={item.path}
                 className={`relative w-12 h-12 flex items-center justify-center rounded-lg transition-all group ${
-                  isActive ? "bg-rose-800 text-white" : "text-muted-foreground hover:bg-accent"
+                  isActive ? "bg-primary text-white" : "text-muted-foreground hover:bg-accent"
                 }`}
               >
                 <Icon size={24} />
@@ -84,7 +84,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="relative">
           <button
             onClick={() => setUserMenuOpen(!userMenuOpen)}
-            className="w-12 h-12 bg-rose-800 hover:bg-rose-700 rounded-full flex items-center justify-center text-white font-medium transition-colors group relative"
+            className="w-12 h-12 bg-primary hover:bg-primary/70 rounded-full flex items-center justify-center text-white font-medium transition-colors group relative"
             title={user?.firstName}
           >
             {user?.firstName?.[0]?.toUpperCase() || "U"}

@@ -211,7 +211,7 @@ export default function Tasks() {
     return (
       <Layout>
         <div className="flex items-center justify-center h-96">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-800"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </Layout>
     );
@@ -230,7 +230,7 @@ export default function Tasks() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => handleOpenModal()}
-            className="flex items-center gap-2 px-4 py-2 bg-rose-700 hover:bg-primary-800 text-primary-foreground rounded-lg font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/70 text-primary-foreground rounded-lg font-medium transition-colors"
           >
             <FiPlus className="w-5 h-5" />
             New Task
@@ -406,7 +406,7 @@ export default function Tasks() {
                   onClick={() => setCurrentPage(page)}
                   className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
                     currentPage === page
-                      ? "bg-rose-800 text-primary-foreground"
+                      ? "bg-primary text-primary-foreground"
                       : "bg-card border border-border hover:bg-accent"
                   }`}
                 >
@@ -562,7 +562,7 @@ export default function Tasks() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       type="submit"
-                      className="flex-1 py-3 bg-rose-800 hover:bg-rose-900 text-primary-foreground rounded-lg font-medium transition-colors"
+                      className="flex-1 py-3 bg-primary hover:bg-primary/70 text-primary-foreground rounded-lg font-medium transition-colors"
                     >
                       {editingTask ? "Update Task" : "Create Task"}
                     </motion.button>

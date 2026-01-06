@@ -143,7 +143,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-3 px-4 bg-rose-800 text-white font-medium rounded-lg hover:bg-rose-900 hover:shadow-lg transition-colors ${
+              className={`w-full py-3 px-4 bg-primary text-white font-medium rounded-lg hover:bg-primary/70 hover:shadow-lg transition-colors ${
                 loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
