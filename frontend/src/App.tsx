@@ -70,14 +70,14 @@ function App() {
             toastOptions={{
               duration: 3000,
               style: {
-                background: "hsl(var(--card))",
-                color: "hsl(var(--foreground))",
-                border: "1px solid hsl(var(--border))",
+                background: "var(--color-card)",
+                color: "var(--color-foreground)",
+                border: "1px solid var(--color-border)",
               },
               success: {
                 iconTheme: {
-                  primary: "hsl(var(--primary))",
-                  secondary: "hsl(var(--primary-foreground))",
+                  primary: "#10b981",
+                  secondary: "#ffffff",
                 },
               },
             }}
