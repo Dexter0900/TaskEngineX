@@ -17,7 +17,6 @@ const Verify = () => {
 
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("Verifying your magic link...");
-  const [countdown, setCountdown] = useState(3);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -36,18 +35,12 @@ const Verify = () => {
 
         login(response.token, response.user);
         setStatus("success");
-        setMessage("Login successful!");
+        setMessage("Login successful! Redirecting...");
 
-        const timer = setInterval(() => {
-          setCountdown((prev) => {
-            if (prev <= 1) {
-              clearInterval(timer);
-              navigate("/dashboard", { replace: true });
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
+        // Immediate redirect instead of countdown
+        setTimeout(() => {
+          navigate("/dashboard", { replace: true });
+        }, 500); // Just a small delay for better UX
       } catch (err: any) {
         console.error("❌ Magic link verification failed:", err);
         setStatus("error");
@@ -90,10 +83,6 @@ const Verify = () => {
             </div>
             <h2 className="text-2xl font-semibold text-emerald-400 mb-3">Verified</h2>
             <p className="text-slate-300 text-sm mb-6">{message}</p>
-            <p className="text-slate-400 text-xs">
-              Redirecting in{" "}
-              <span className="font-semibold text-white">{countdown}s</span>
-            </p>
           </div>
         )}
 
