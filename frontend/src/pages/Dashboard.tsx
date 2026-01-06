@@ -43,6 +43,7 @@ export default function Dashboard() {
 
       setTasks(tasksResponse.tasks);
       setStats(statsResponse.stats);
+      console.log("Dashboard data loaded:", statsResponse.stats);
     } catch (error) {
       console.error("Failed to load dashboard data:", error);
     } finally {
@@ -86,8 +87,8 @@ export default function Dashboard() {
   ];
 
   const priorityData = [
-    { name: "Low", value: 0 },
-    { name: "Medium", value: 0 },
+    { name: "Low", value: stats?.lowPriority || 0 },
+    { name: "Medium", value: stats?.mediumPriority || 0 },
     { name: "High", value: stats?.highPriority || 0 },
   ];
 

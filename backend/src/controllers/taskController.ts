@@ -309,6 +309,12 @@ export const getTaskStats = async (req: AuthRequest, res: Response) => {
           highPriority: {
             $sum: { $cond: [{ $eq: ["$priority", "high"] }, 1, 0] },
           },
+          mediumPriority: {
+            $sum: { $cond: [{ $eq: ["$priority", "medium"] }, 1, 0] },
+          },
+          lowPriority: {
+            $sum: { $cond: [{ $eq: ["$priority", "low"] }, 1, 0] },
+          },
         },
       },
     ]);
