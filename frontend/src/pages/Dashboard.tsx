@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
   FiCheckCircle,
   FiClock,
   FiAlertCircle,
   FiTrendingUp,
   FiCloud,
+  FiWind,
+  FiDroplet,
+  FiArrowRight
 } from "react-icons/fi";
+import { LuCircleGauge } from "react-icons/lu";
 import { getAllTasks, getTaskStats } from "../api/taskApi";
 import type { Task, TaskStatsResponse } from "../types";
 import Layout from "../components/Layout";
@@ -43,7 +48,6 @@ export default function Dashboard() {
 
       setTasks(tasksResponse.tasks);
       setStats(statsResponse.stats);
-      console.log("Dashboard data loaded:", statsResponse.stats);
     } catch (error) {
       console.error("Failed to load dashboard data:", error);
     } finally {
@@ -59,6 +63,7 @@ export default function Dashboard() {
       );
       const data = await response.json();
       setWeather(data);
+      console.log("Weather data loaded:", data);
     } catch (error) {
       console.log("Weather fetch failed (API key needed)");
     }
@@ -239,11 +244,60 @@ export default function Dashboard() {
               <FiCloud size={24} />
             </div>
             {weather ? (
-              <div>
-                <p className="text-4xl font-bold">{Math.round(weather.main?.temp || 0)}°C</p>
-                <p className="text-sm opacity-90 mt-1">{weather.weather?.[0]?.description}</p>
-                <p className="text-xs opacity-75 mt-2">{weather.name}</p>
+              <a
+                href={`https://www.google.com/search?q=weather+${encodeURIComponent(weather.name)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block hover:opacity-80 transition-opacity cursor-pointer"
+              >
+              <div className="space-y-4">
+                {/* Temperature Section */}
+                <div>
+                  <p className="text-5xl font-bold">{Math.round(weather.main?.temp || 0)}°C</p>
+                  <p className="text-base opacity-90 mt-2 capitalize">{weather.weather?.[0]?.description}</p>
+                  <p className="text-sm opacity-75 mt-1">{weather.name}</p>
+                </div>
+
+                {/* Weather Details Grid */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  {/* Feels Like */}
+                  <div className="flex items-center gap-2">
+                    <FiCloud className="text-lg shrink-0" />
+                    <div>
+                      <p className="text-xs opacity-75">Feels Like</p>
+                      <p className="text-base font-semibold">{Math.round(weather.main?.feels_like || 0)}°C</p>
+                    </div>
+                  </div>
+
+                  {/* Humidity */}
+                  <div className="flex items-center gap-2">
+                    <FiDroplet className="text-lg shrink-0" />
+                    <div>
+                      <p className="text-xs opacity-75">Humidity</p>
+                      <p className="text-base font-semibold">{Math.round(weather.main?.humidity || 0)}%</p>
+                    </div>
+                  </div>
+
+                  {/* Wind Speed */}
+                  <div className="flex items-center gap-2">
+                    <FiWind className="text-lg shrink-0" />
+                    <div>
+                      <p className="text-xs opacity-75">Wind Speed</p>
+                      <p className="text-base font-semibold">{Math.round(weather.wind?.speed || 0)} m/s</p>
+                    </div>
+                  </div>
+
+                  {/* Pressure */}
+                  <div className="flex items-center gap-2">
+                    <LuCircleGauge className="text-lg shrink-0" />
+                    <div>
+                      <p className="text-xs opacity-75">Pressure</p>
+                      <p className="text-base font-semibold">{weather.main?.pressure || 0} hPa</p>
+                    </div>
+                  </div>
+                </div>
               </div>
+              </a>
             ) : (
               <div>
                 <p className="text-sm opacity-75">Weather data unavailable</p>
@@ -259,7 +313,16 @@ export default function Dashboard() {
             transition={{ delay: 0.8 }}
             className="lg:col-span-2 bg-card border border-border rounded-xl p-6"
           >
-            <h3 className="text-lg font-semibold mb-4">Recent Tasks</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Recent Tasks</h3>
+              <Link
+                to="/tasks"
+                className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+              >
+                View All
+                <FiArrowRight size={16} />
+              </Link>
+            </div>
             <div className="space-y-3">
               {tasks.slice(0, 5).map((task, index) => (
                 <motion.div
