@@ -9,6 +9,7 @@ import {
   toggleTaskStatus,
   getTaskStats,
 } from "../controllers/taskController.js";
+import { deleteAllSubtaskOfTask } from "../controllers/subtaskController.js";
 import { authenticateToken } from "../middlewares/auth.js";
 
 const router = express.Router();
@@ -51,7 +52,7 @@ router.post("/", authenticateToken, createTask);
  *   ?priority=high           - Filter by priority
  *   ?search=project          - Search in title/description
  *   ?sort=-createdAt         - Sort order (-createdAt = newest first)
- * 
+ *
  * Examples:
  *   GET /api/tasks
  *   GET /api/tasks?status=completed
@@ -90,7 +91,7 @@ router.put("/:id", authenticateToken, updateTask);
  * Params: id
  * Example: DELETE /api/tasks/65f1234567890abcdef12345
  */
-router.delete("/:id", authenticateToken, deleteTask);
+router.delete("/:id", authenticateToken, deleteAllSubtaskOfTask, deleteTask);
 
 // ============================================
 // SPECIAL ROUTES
@@ -100,14 +101,13 @@ router.delete("/:id", authenticateToken, deleteTask);
  * TOGGLE TASK STATUS (Quick action)
  * PATCH /api/tasks/:id/toggle
  * Params: id
- * 
+ *
  * What it does:
  *   - If status is "completed" → change to "pending"
  *   - If status is "pending" or "in-progress" → change to "completed"
- * 
+ *
  * Example: PATCH /api/tasks/65f123.../toggle
  */
 router.patch("/:id/toggle", authenticateToken, toggleTaskStatus);
-
 
 export default router;

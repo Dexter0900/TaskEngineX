@@ -187,3 +187,28 @@ export const deleteSubtask = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: "Failed to delete subtask" });
   }
 };
+
+export const deleteAllSubtaskOfTask = async (
+  req: AuthRequest,
+  res: Response,
+  next: Function
+) => {
+  try {
+    const { id: taskId } = req.params;
+    const userId = req.userId;
+
+    const task = await Task.findOne({ _id: taskId, userId });
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    await Subtask.deleteMany({ taskId });
+    next();
+    res.status(200).json({
+      success: true,
+      message: "All subtasks deleted successfully",
+    });
+  } catch (error) {
+    console.error("❌ Delete all subtasks error:", error);
+    return res.status(500).json({ message: "Failed to delete subtasks" });
+  }
+};
