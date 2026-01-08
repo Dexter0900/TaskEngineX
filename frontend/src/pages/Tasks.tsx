@@ -10,7 +10,7 @@ import {
   FiAlignLeft,
   FiFlag,
 } from "react-icons/fi";
-import { getAllTasks, createTask, updateTask, deleteTask } from "../api/taskApi";
+import { getAllTasks, createTask, updateTask, deleteTask, toggleTaskStatus } from "../api/taskApi";
 import type { Task } from "../types";
 import Layout from "../components/Layout";
 import SubtaskList from "../components/SubtaskList";
@@ -33,7 +33,6 @@ export default function Tasks() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [expandedTask, setExpandedTask] = useState<string | null>(null);
 
   // Filters
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -164,6 +163,21 @@ export default function Tasks() {
       setDeleteConfirm(null);
     } catch (error) {
       toast.error("Failed to delete task");
+    }
+  };
+
+  const handleToggleStatus = async (taskId: string) => {
+    try {
+      const response = await toggleTaskStatus(taskId);
+      setTasks((prev) => prev.map((t) => (t._id === taskId ? response.task : t)));
+      emitTaskEvent("task:update", {
+        taskId,
+        userId: user?.id,
+      });
+      toast.success("Task status updated");
+      await fetchTasks();
+    } catch (error) {
+      toast.error("Failed to toggle status");
     }
   };
 
@@ -314,12 +328,7 @@ export default function Tasks() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <div
-                      className="cursor-pointer"
-                      onClick={() =>
-                        setExpandedTask(expandedTask === task._id ? null : task._id)
-                      }
-                    >
+                    <div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">
                         {task.title}
                       </h3>
@@ -329,13 +338,18 @@ export default function Tasks() {
                         </p>
                       )}
                       <div className="flex flex-wrap items-center gap-2">
-                        <span
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleToggleStatus(task._id);
+                          }}
                           className={`px-3 py-1 rounded-full text-xs font-medium ${
                             statusColors[task.status]
-                          }`}
+                          } transition-colors`}
+                          title="Toggle status"
                         >
                           {task.status.replace("-", " ")}
-                        </span>
+                        </button>
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-medium ${
                             priorityColors[task.priority]
@@ -352,19 +366,10 @@ export default function Tasks() {
                       </div>
                     </div>
 
-                    {/* Subtasks - Expanded */}
-                    <AnimatePresence>
-                      {expandedTask === task._id && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="border-t border-border mt-4 pt-4"
-                        >
-                          <SubtaskList taskId={task._id} />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    {/* Subtasks - Always visible now */}
+                    <div className="border-t border-border mt-4 pt-4">
+                      <SubtaskList taskId={task._id} />
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-2">

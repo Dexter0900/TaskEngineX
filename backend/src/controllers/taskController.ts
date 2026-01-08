@@ -263,7 +263,11 @@ export const toggleTaskStatus = async (req: AuthRequest, res: Response) => {
     }
 
     // Status toggle karo
-    task.status = task.status === "completed" ? "pending" : "completed";
+
+    const statusFlow = ["pending", "in-progress", "completed"] as const;
+    const currentIndex = statusFlow.indexOf(task.status);
+    task.status = statusFlow[(currentIndex + 1) % statusFlow.length];
+    
     await task.save();
 
     // Success response
