@@ -1,14 +1,14 @@
 import { ENV } from "../config/env.js";
 
 // Check which email service to use
-const USE_SENDGRID = !!process.env.SENDGRID_API_KEY;
+const USE_SENDGRID = !!ENV.SENDGRID_API_KEY;
 
 let sgMail: any = null;
 if (USE_SENDGRID) {
   try {
     const sgMailImport = await import("@sendgrid/mail");
     sgMail = sgMailImport.default;
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+    sgMail.setApiKey(ENV.SENDGRID_API_KEY);
     console.log("✅ SendGrid initialized");
   } catch (error) {
     console.error("❌ SendGrid initialization failed:", error);
@@ -34,18 +34,20 @@ if (!USE_SENDGRID && ENV.EMAIL_USER && ENV.EMAIL_PASSWORD) {
       connectionTimeout: 10000,
       socketTimeout: 10000,
     });
-    
+
     console.log("✅ Nodemailer transporter initialized with secure connection");
   } catch (error) {
     console.error("❌ Nodemailer transporter initialization failed:", error);
   }
 } else if (!USE_SENDGRID) {
-  console.warn("⚠️ Email credentials not configured - email sending will be disabled");
+  console.warn(
+    "⚠️ Email credentials not configured - email sending will be disabled"
+  );
 }
 
 export const sendMagicLink = async (email: string, token: string) => {
   console.log("📧 sendMagicLink called for:", email);
-  
+
   const magicLink = `${ENV.FRONTEND_URL}/auth/verify?token=${token}`;
 
   const htmlContent = `
@@ -71,12 +73,12 @@ export const sendMagicLink = async (email: string, token: string) => {
       console.log("📨 Sending via SendGrid...");
       console.log("📧 From:", ENV.EMAIL_FROM);
       console.log("📧 To:", email);
-      
+
       await sgMail.send({
         to: email,
         from: {
           email: ENV.EMAIL_FROM,
-          name: "TaskEngineX Team"
+          name: "TaskEngineX Team",
         },
         subject: "🔐 Your Magic Login Link",
         html: htmlContent,
@@ -103,12 +105,15 @@ export const sendMagicLink = async (email: string, token: string) => {
     console.log("✅ Email sent via Nodemailer to:", email);
   } catch (error: any) {
     console.error("❌ Email send failed:", error);
-    
+
     // Log SendGrid specific errors
     if (error.response?.body?.errors) {
-      console.error("❌ SendGrid errors:", JSON.stringify(error.response.body.errors, null, 2));
+      console.error(
+        "❌ SendGrid errors:",
+        JSON.stringify(error.response.body.errors, null, 2)
+      );
     }
-    
+
     throw new Error("Failed to send email");
   }
 };
