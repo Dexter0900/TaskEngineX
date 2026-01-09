@@ -2,10 +2,10 @@
 
 /* Dark mode permanent theme variables using @theme */
 @theme {
-  --color-background: oklch(0.15 0 0);
+  --color-background: oklch(0 0 0);
   --color-foreground: oklch(0.98 0 0);
   --color-primary: oklch(0.6363 0.1258 241.89);
-  --color-card: oklch(0.18 0 0);
+  --color-card: oklch(0 0 0);
   --color-card-foreground: oklch(0.98 0 0);
   --color-accent: oklch(0.35 0 0);
   --color-accent-foreground: oklch(0.98 0 0);
@@ -22,6 +22,7 @@
   }
   
   body {
+    font-family: 'Inter', sans-serif;
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-feature-settings: "rlig" 1, "calt" 1;

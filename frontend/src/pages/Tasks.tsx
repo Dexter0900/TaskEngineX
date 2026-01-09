@@ -454,7 +454,7 @@ export default function Tasks() {
               <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
                 {/* Modal Header */}
                 <div className="flex items-center justify-between p-6 border-b border-border">
-                  <h2 className="text-2xl font-bold text-foreground">
+                  <h2 className="text-2xl font-medium text-foreground">
                     {editingTask ? "Edit Task" : "Create New Task"}
                   </h2>
                   <button
@@ -605,7 +605,7 @@ export default function Tasks() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6">
-                <h3 className="text-xl font-bold text-foreground mb-2">
+                <h3 className="text-xl font-medium text-foreground mb-2">
                   Delete Task?
                 </h3>
                 <p className="text-muted-foreground mb-6">
