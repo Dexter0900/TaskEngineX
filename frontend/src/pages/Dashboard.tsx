@@ -253,7 +253,7 @@ export default function Dashboard() {
               <div className="space-y-4">
                 {/* Temperature Section */}
                 <div>
-                  <p className="text-5xl font-bold">{Math.round(weather.main?.temp || 0)}°C</p>
+                  <p className="text-5xl font-medium">{Math.round(weather.main?.temp || 0)}°C</p>
                   <p className="text-base opacity-90 mt-2 capitalize">{weather.weather?.[0]?.description}</p>
                   <p className="text-sm opacity-75 mt-1">{weather.name}</p>
                 </div>

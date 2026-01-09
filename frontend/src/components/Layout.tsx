@@ -47,7 +47,7 @@ export default function Layout({ children }: LayoutProps) {
           to="/dashboard"
           className="w-full h-12 bg-primary flex items-center justify-center hover:bg-primary/70 transition-colors group relative"
         >
-          <span className="text-white font-bold text-lg">TX</span>
+          <span className="text-white font-medium text-lg">TX</span>
           <div className="absolute left-20 px-3 py-1 bg-accent text-foreground text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
             TaskEngineX
           </div>
