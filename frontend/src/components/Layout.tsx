@@ -41,7 +41,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Thin Vertical Sidebar */}
-      <aside className="w-15 border-r border-border bg-card flex flex-col items-center py-6 gap-8 fixed h-screen">
+      <aside className="w-15 border-r border-border bg-card flex flex-col items-center py-14 gap-12 fixed h-screen">
         {/* Logo */}
         <Link
           to="/dashboard"
@@ -54,7 +54,7 @@ export default function Layout({ children }: LayoutProps) {
         </Link>
 
         {/* Navigation Items */}
-        <nav className="flex flex-col gap-6">
+        <nav className="flex flex-col gap-4">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -153,7 +153,7 @@ export default function Layout({ children }: LayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-20">
+      <main className="flex-1 ml-20 mr-15 mt-5 mb-5">
         <div className="container mx-auto p-4 lg:p-6">{children}</div>
       </main>
     </div>

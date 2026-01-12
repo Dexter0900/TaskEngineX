@@ -210,14 +210,14 @@ export default function Tasks() {
   const totalPages = Math.ceil(sortedTasks.length / tasksPerPage);
 
   const statusColors = {
-    pending: "bg-amber-900/30 text-amber-400",
+    pending: "bg-red-900/30 text-red-400",
     "in-progress": "bg-purple-900/30 text-purple-400",
     completed: "bg-green-900/30 text-green-400",
   };
 
   const priorityColors = {
     low: "bg-blue-900/30 text-blue-400",
-    medium: "bg-yellow-900/30 text-yellow-400",
+    medium: "bg-amber-900/30 text-amber-400",
     high: "bg-red-900/30 text-red-400",
   };
 
@@ -237,7 +237,7 @@ export default function Tasks() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Tasks</h1>
+            <h1 className="text-4xl font-bold text-foreground">Tasks</h1>
             <p className="text-muted-foreground">Manage your tasks and stay organized</p>
           </div>
           <motion.button
@@ -254,8 +254,8 @@ export default function Tasks() {
         {/* Filters and Sort */}
         <div className="bg-card border border-border rounded-xl p-4">
           <div className="flex items-center gap-2 mb-3">
-            <FiFilter className="text-muted-foreground" />
-            <span className="text-sm font-medium text-foreground">Filters & Sort</span>
+            <FiFilter className="w-6 h-6 text-muted-foreground" />
+            <span className="text-2xl font-medium text-foreground">Filters & Sort</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Status Filter */}

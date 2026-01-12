@@ -102,7 +102,7 @@ export default function Dashboard() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <h1 className="text-4xl font-bold text-foreground">Dashboard</h1>
           <p className="text-muted-foreground">Overview of your tasks and productivity</p>
         </div>
 
@@ -324,7 +324,7 @@ export default function Dashboard() {
               </Link>
             </div>
             <div className="space-y-3">
-              {tasks.slice(0, 5).map((task, index) => (
+              {tasks.slice(0, 3).map((task, index) => (
                 <motion.div
                   key={task._id}
                   initial={{ opacity: 0, x: -10 }}
