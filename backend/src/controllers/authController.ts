@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { User } from "../models/User.js";
 import {
   generateToken,
@@ -8,13 +8,14 @@ import {
 import { sendMagicLink } from "../utils/email.js";
 import { addEmailJob } from "../config/queue.js";
 import { AuthRequest } from "../middlewares/auth.js";
+import { SignupRequest, VerifyMagicLinkRequest, SetPasswordRequest, LoginRequest } from "../types/requests.js";
 import bcrypt from "bcryptjs";
 import { ENV } from "../config/env.js";
 
 // Google OAuth callback
-export const googleCallback = async (req: Request, res: Response) => {
+export const googleCallback = async (req: AuthRequest, res: Response) => {
   try {
-    const user = req.user as any;
+    const user = req.user as Record<string, unknown>;
 
     if (!user) {
       return res.redirect(`${ENV.FRONTEND_URL}/auth/error`);
@@ -22,8 +23,8 @@ export const googleCallback = async (req: Request, res: Response) => {
 
     // Generate JWT
     const token = generateToken({
-      userId: user._id.toString(),
-      email: user.email,
+      userId: (user._id as Record<string, unknown>).toString(),
+      email: user.email as string,
     });
 
     // Redirect to frontend with token
@@ -35,11 +36,11 @@ export const googleCallback = async (req: Request, res: Response) => {
 };
 
 // Signup with email and password - sends magic link for verification
-export const signup = async (req: Request, res: Response) => {
+export const signup = async (req: AuthRequest, res: Response) => {
   console.log("🚀 [SIGNUP] Starting signup request");
 
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName } = req.body as SignupRequest;
     console.log("📝 [SIGNUP] Data received:", {
       email,
       firstName,
@@ -134,7 +135,7 @@ export const signup = async (req: Request, res: Response) => {
         error: "EMAIL_SEND_FAILED",
         details:
           ENV.NODE_ENV === "development"
-            ? (emailError as Error).message
+            ? (emailError instanceof Error ? emailError.message : String(emailError))
             : undefined,
       });
     }
@@ -143,15 +144,15 @@ export const signup = async (req: Request, res: Response) => {
     res.status(500).json({
       message: "An error occurred during signup. Please try again.",
       error:
-        ENV.NODE_ENV === "development" ? (error as Error).message : undefined,
+        ENV.NODE_ENV === "development" ? (error instanceof Error ? error.message : String(error)) : undefined,
     });
   }
 };
 
 // Verify magic link and create user
-export const verifyMagicLink = async (req: Request, res: Response) => {
+export const verifyMagicLink = async (req: AuthRequest, res: Response) => {
   try {
-    const { token } = req.body;
+    const { token } = req.body as VerifyMagicLinkRequest;
 
     if (!token) {
       return res.status(400).json({ message: "Token is required" });
@@ -228,9 +229,9 @@ export const verifyMagicLink = async (req: Request, res: Response) => {
 };
 
 // Login with email and password
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: AuthRequest, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body as LoginRequest;
 
     // Validation
     if (!email || !password) {
@@ -321,7 +322,7 @@ export const logout = async (req: AuthRequest, res: Response) => {
 // Set password for Google-only users (account linking)
 export const setPassword = async (req: AuthRequest, res: Response) => {
   try {
-    const { password, firstName, lastName } = req.body;
+    const { password, firstName, lastName } = req.body as SetPasswordRequest;
 
     // Validation
     if (!password) {
