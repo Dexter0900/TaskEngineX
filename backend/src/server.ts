@@ -3,6 +3,7 @@ import app from "./app.js";
 import { connectDB } from "./config/db.js";
 import { ENV } from "./config/env.js";
 import { initializeSocket } from "./config/socket.js";
+import { closeQueue } from "./config/queue.js";
 
 const startServer = async () => {
   try {
@@ -20,6 +21,19 @@ const startServer = async () => {
       console.log(`✅ Server running on http://localhost:${ENV.PORT}`);
       console.log(`🔌 WebSocket ready on ws://localhost:${ENV.PORT}`);
       console.log(`📝 Environment: ${ENV.NODE_ENV}`);
+    });
+
+    // Graceful shutdown
+    process.on("SIGTERM", async () => {
+      console.log("🛑 SIGTERM received, shutting down gracefully...");
+      await closeQueue();
+      process.exit(0);
+    });
+
+    process.on("SIGINT", async () => {
+      console.log("🛑 SIGINT received, shutting down gracefully...");
+      await closeQueue();
+      process.exit(0);
     });
   } catch (error) {
     console.error("❌ Server start failed:", error);
