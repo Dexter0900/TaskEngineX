@@ -5,7 +5,8 @@ import {
   generateMagicLinkToken,
   verifyMagicLinkToken,
 } from "../utils/jwt.js";
-import { emailService } from "../services/emailService.js";
+import { sendMagicLink } from "../utils/email.js";
+import { addEmailJob } from "../config/queue.js";
 import { AuthRequest } from "../middlewares/auth.js";
 import bcrypt from "bcryptjs";
 import { ENV } from "../config/env.js";
@@ -104,10 +105,19 @@ export const signup = async (req: Request, res: Response) => {
       password: hashedPassword,
     });
 
-    // Send email using email service (production: direct, development: queue)
+    // Send email: Production = Direct, Development = Queue
     console.log("📧 [SIGNUP] Sending verification email...");
     try {
-      await emailService.sendMagicLinkEmail(email, token);
+      if (ENV.NODE_ENV === "production") {
+        // Production: Direct email send (no queue)
+        console.log("⚡ [SIGNUP] Direct email send (production)");
+        await sendMagicLink(email, token);
+      } else {
+        // Development: Queue-based for testing
+        console.log("📤 [SIGNUP] Queue-based email (development)");
+        await addEmailJob(email, token, "magic-link");
+      }
+
       console.log("✅ [SIGNUP] Email sent successfully");
 
       res.json({
@@ -128,8 +138,7 @@ export const signup = async (req: Request, res: Response) => {
             : undefined,
       });
     }
-    }
-   catch (error) {
+  } catch (error) {
     console.error("❌ [SIGNUP] Unexpected error:", error);
     res.status(500).json({
       message: "An error occurred during signup. Please try again.",

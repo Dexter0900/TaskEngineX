@@ -3,63 +3,58 @@ import { ENV } from "./env.js";
 import { sendMagicLink } from "../utils/email.js";
 
 /**
- * ============================================
- * EMAIL QUEUE CONFIGURATION
- * ============================================
- * This queue is used for:
- * - Development: Testing background job processing
- * - Production: Not used (emails sent directly)
- *
- * Note: Render.com has only one dyno, so no separate worker process
+ * EMAIL QUEUE - Development Only
+ * Production uses direct email send (no queue needed)
  */
 
-// Redis connection configuration
-export const emailQueue = ENV.REDIS_URL
-  ? new Queue("email", ENV.REDIS_URL, {
-      redis: {
-        tls: {}, // REQUIRED for rediss:// (Upstash)
-      },
-    })
-  : new Queue("email", {
-      redis: {
-        host: ENV.REDIS_HOST || "127.0.0.1",
-        port: Number(ENV.REDIS_PORT) || 6379,
-      },
-    });
+let emailQueue: Queue.Queue<any> | null = null;
 
-console.log(
-  "🔌 [QUEUE] Connected to:",
-  ENV.REDIS_URL ? "Upstash Redis" : "Local Redis",
-);
+// Initialize queue only in development
+if (ENV.NODE_ENV === "development") {
+  emailQueue = ENV.REDIS_URL
+    ? new Queue("email", ENV.REDIS_URL, {
+        redis: {
+          tls: {},
+        },
+      })
+    : new Queue("email", {
+        redis: {
+          host: ENV.REDIS_HOST || "127.0.0.1",
+          port: Number(ENV.REDIS_PORT) || 6379,
+        },
+      });
+
+  console.log(
+    "🔌 [QUEUE] Connected to:",
+    ENV.REDIS_URL ? "Upstash Redis" : "Local Redis",
+  );
+
+  // Queue event listeners
+  emailQueue.on("completed", (job) => {
+    console.log(`✅ [QUEUE] Job ${job.id} completed for ${job.data.email}`);
+  });
+
+  emailQueue.on("failed", (job, err) => {
+    console.error(`❌ [QUEUE] Job ${job?.id} failed:`, err.message);
+  });
+
+  emailQueue.on("error", (error) => {
+    console.error("❌ [QUEUE] Redis error:", error.message);
+  });
+}
 
 /**
- * Queue event listeners
- */
-emailQueue.on("completed", (job) => {
-  console.log(`✅ [QUEUE] Job ${job.id} completed for ${job.data.email}`);
-});
-
-emailQueue.on("failed", (job, err) => {
-  console.error(`❌ [QUEUE] Job ${job?.id} failed:`, err.message);
-});
-
-emailQueue.on("error", (error) => {
-  console.error("❌ [QUEUE] Redis connection error:", error.message);
-});
-
-/**
- * Queue Worker (Job Processor)
- * Processes email jobs from the queue
+ * Start email worker
  */
 let workerStarted = false;
 
 export const startEmailWorker = () => {
-  if (workerStarted) return;
+  if (workerStarted || !emailQueue) return;
   workerStarted = true;
 
   console.log("🚀 [QUEUE] Email worker started");
 
-  emailQueue.process(async (job) => {
+  emailQueue!.process(async (job) => {
     const { email, token, type } = job.data;
     console.log(`📨 [QUEUE] Processing job ${job.id} - sending to ${email}`);
 
@@ -71,19 +66,22 @@ export const startEmailWorker = () => {
         throw new Error(`Unknown email type: ${type}`);
     }
 
-    return { success: true, email };
+    return { success: true };
   });
 };
 
 /**
- * Add job to email queue
- * Used in development for testing
+ * Add job to queue (dev only)
  */
 export const addEmailJob = async (
   email: string,
   token: string,
   type: string = "magic-link",
 ) => {
+  if (!emailQueue) {
+    throw new Error("[QUEUE] Queue not initialized (production mode)");
+  }
+
   try {
     const job = await emailQueue.add(
       { email, token, type },
@@ -107,9 +105,11 @@ export const addEmailJob = async (
 };
 
 /**
- * Graceful shutdown
+ * Close queue
  */
 export const closeQueue = async () => {
+  if (!emailQueue) return;
+
   try {
     await emailQueue.close();
     console.log("🔴 [QUEUE] Queue closed");

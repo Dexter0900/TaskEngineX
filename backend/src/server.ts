@@ -10,9 +10,15 @@ const startServer = async () => {
     // Connect to database
     await connectDB();
 
-    // Start email queue worker
-    startEmailWorker();
-    console.log("🚀 Email queue worker started");
+    // Start email queue worker - Development only
+    if (ENV.NODE_ENV === "development") {
+      startEmailWorker();
+      console.log("🚀 [QUEUE] Email worker started (development mode)");
+    } else {
+      console.log(
+        "⏭️ [QUEUE] Queue disabled (production mode - using direct email)",
+      );
+    }
 
     // Create HTTP server
     const httpServer = http.createServer(app);
