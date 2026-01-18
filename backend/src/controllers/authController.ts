@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
 import { User } from "../models/User.js";
-import { generateToken, generateMagicLinkToken, verifyMagicLinkToken } from "../utils/jwt.js";
+import {
+  generateToken,
+  generateMagicLinkToken,
+  verifyMagicLinkToken,
+} from "../utils/jwt.js";
 import { sendMagicLink } from "../utils/email.js";
+import { addEmailJob } from "../config/queue.js";
 import { AuthRequest } from "../middlewares/auth.js";
 import bcrypt from "bcryptjs";
 import { ENV } from "../config/env.js";
@@ -32,16 +37,21 @@ export const googleCallback = async (req: Request, res: Response) => {
 // Signup with email and password - sends magic link for verification
 export const signup = async (req: Request, res: Response) => {
   console.log("🚀 [SIGNUP] Starting signup request");
-  
+
   try {
     const { email, password, firstName, lastName } = req.body;
-    console.log("📝 [SIGNUP] Data received:", { email, firstName, lastName, passwordLength: password?.length });
+    console.log("📝 [SIGNUP] Data received:", {
+      email,
+      firstName,
+      lastName,
+      passwordLength: password?.length,
+    });
 
     // Validation
     if (!email || !password || !firstName || !lastName) {
       console.warn("⚠️ [SIGNUP] Missing required fields");
-      return res.status(400).json({ 
-        message: "Email, password, first name, and last name are required" 
+      return res.status(400).json({
+        message: "Email, password, first name, and last name are required",
       });
     }
 
@@ -55,28 +65,29 @@ export const signup = async (req: Request, res: Response) => {
     // Validate password length
     if (password.length < 8) {
       console.warn("⚠️ [SIGNUP] Password too short:", password.length);
-      return res.status(400).json({ 
-        message: "Password must be at least 8 characters long" 
+      return res.status(400).json({
+        message: "Password must be at least 8 characters long",
       });
     }
 
     console.log("✅ [SIGNUP] Validation passed");
-    
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       console.warn("⚠️ [SIGNUP] User already exists:", email);
       // If user has password, they already signed up with email
       if (existingUser.password) {
-        return res.status(400).json({ 
-          message: "User with this email already exists. Please login." 
+        return res.status(400).json({
+          message: "User with this email already exists. Please login.",
         });
       }
       // If user only has Google, allow them to add password
       if (existingUser.provider.includes("google") && !existingUser.password) {
-        return res.status(400).json({ 
-          message: "This email is linked with Google. Use 'Set Password' to add password login.",
-          code: "GOOGLE_ACCOUNT_EXISTS"
+        return res.status(400).json({
+          message:
+            "This email is linked with Google. Use 'Set Password' to add password login.",
+          code: "GOOGLE_ACCOUNT_EXISTS",
         });
       }
     }
@@ -94,31 +105,37 @@ export const signup = async (req: Request, res: Response) => {
       password: hashedPassword,
     });
 
-    // Send magic link email
-    console.log("📧 [SIGNUP] Sending magic link email to:", email);
+    // Add email job to queue (non-blocking)
+    console.log("📤 [SIGNUP] Adding email to queue...");
     try {
-      await sendMagicLink(email, token);
-      console.log("✅ [SIGNUP] Email sent successfully or skipped (email not configured)");
-      
+      await addEmailJob(email, token, "magic-link");
+      console.log("✅ [SIGNUP] Email job queued successfully");
+
       res.json({
-        message: "Verification email sent! Please check your email to complete registration.",
+        message:
+          "Verification email sent! Please check your email to complete registration.",
         success: true,
       });
-    } catch (emailError) {
-      console.error("❌ [SIGNUP] Email sending failed:", emailError);
-      
-      // Email failed but return helpful error
-      return res.status(500).json({ 
-        message: "Failed to send verification email. Please contact support or try again later.",
-        error: "EMAIL_SEND_FAILED",
-        details: ENV.NODE_ENV === "development" ? (emailError as Error).message : undefined
+    } catch (queueError) {
+      console.error("❌ [SIGNUP] Queue error:", queueError);
+
+      // Even if queue fails, return success - manual fallback can be done
+      return res.status(500).json({
+        message:
+          "Signup registered but email delivery queued. Please contact support if email doesn't arrive.",
+        error: "QUEUE_ERROR",
+        details:
+          ENV.NODE_ENV === "development"
+            ? (queueError as Error).message
+            : undefined,
       });
     }
   } catch (error) {
     console.error("❌ [SIGNUP] Unexpected error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: "An error occurred during signup. Please try again.",
-      error: ENV.NODE_ENV === "development" ? (error as Error).message : undefined
+      error:
+        ENV.NODE_ENV === "development" ? (error as Error).message : undefined,
     });
   }
 };
@@ -138,32 +155,32 @@ export const verifyMagicLink = async (req: Request, res: Response) => {
 
     // Check if user already exists
     let user = await User.findOne({ email });
-    
+
     if (user) {
       // If user has password already, don't allow duplicate
       if (user.password) {
-        return res.status(400).json({ 
-          message: "User already exists. Please login." 
+        return res.status(400).json({
+          message: "User already exists. Please login.",
         });
       }
-      
+
       // If Google user wants to add password (account linking)
       if (user.provider.includes("google") && !user.password) {
         await User.updateOne(
           { _id: user._id },
           {
             $addToSet: { provider: "magic-link" },
-            $set: { 
+            $set: {
               password,
               firstName,
-              lastName
-            }
-          }
+              lastName,
+            },
+          },
         );
-        
+
         // Fetch updated user
         user = await User.findById(user._id);
-        
+
         if (!user) {
           return res.status(500).json({ message: "Failed to update user" });
         }
@@ -209,32 +226,33 @@ export const login = async (req: Request, res: Response) => {
 
     // Validation
     if (!email || !password) {
-      return res.status(400).json({ 
-        message: "Email and password are required" 
+      return res.status(400).json({
+        message: "Email and password are required",
       });
     }
 
     // Find user
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ 
-        message: "Invalid email or password" 
+      return res.status(401).json({
+        message: "Invalid email or password",
       });
     }
 
     // Check if user has password (not Google-only user)
     if (!user.password) {
-      return res.status(401).json({ 
-        message: "This account uses Google login. Please login with Google or set a password first.",
-        code: "NO_PASSWORD_SET"
+      return res.status(401).json({
+        message:
+          "This account uses Google login. Please login with Google or set a password first.",
+        code: "NO_PASSWORD_SET",
       });
     }
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ 
-        message: "Invalid email or password" 
+      return res.status(401).json({
+        message: "Invalid email or password",
       });
     }
 
@@ -296,50 +314,51 @@ export const logout = async (req: AuthRequest, res: Response) => {
 export const setPassword = async (req: AuthRequest, res: Response) => {
   try {
     const { password, firstName, lastName } = req.body;
-    
+
     // Validation
     if (!password) {
-      return res.status(400).json({ 
-        message: "Password is required" 
+      return res.status(400).json({
+        message: "Password is required",
       });
     }
-    
+
     // Validate password length
     if (password.length < 6) {
-      return res.status(400).json({ 
-        message: "Password must be at least 6 characters long" 
+      return res.status(400).json({
+        message: "Password must be at least 6 characters long",
       });
     }
-    
+
     // Get current user
     const user = await User.findById(req.userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    
+
     // Check if user already has password
     if (user.password) {
-      return res.status(400).json({ 
-        message: "Password already set. Use change password instead." 
+      return res.status(400).json({
+        message: "Password already set. Use change password instead.",
       });
     }
-    
+
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     // Update user with password and optionally update name
     const updateData: any = {
       password: hashedPassword,
-      $addToSet: { provider: "magic-link" }
+      $addToSet: { provider: "magic-link" },
     };
-    
+
     if (firstName) updateData.firstName = firstName;
     if (lastName) updateData.lastName = lastName;
-    
+
     await User.updateOne({ _id: user._id }, updateData);
-    
+
     res.json({
-      message: "Password set successfully! You can now login with email and password.",
+      message:
+        "Password set successfully! You can now login with email and password.",
       success: true,
     });
   } catch (error) {
