@@ -1,13 +1,9 @@
 // src/controllers/subtaskController.ts
-import { Request, Response } from "express";
+import { Response } from "express";
 import Subtask from "../models/Subtask";
 import { Task } from "../models/Task";
-
-// Auth request type (matches middleware pattern)
-interface AuthRequest extends Request {
-  userId?: string;
-  userEmail?: string;
-}
+import { AuthRequest } from "../middlewares/auth.js";
+import { CreateSubtaskRequest, UpdateSubtaskRequest } from "../types/requests.js";
 
 /**
  * GET ALL SUBTASKS FOR A TASK
@@ -45,7 +41,7 @@ export const getSubtasks = async (req: AuthRequest, res: Response) => {
 export const createSubtask = async (req: AuthRequest, res: Response) => {
   try {
     const { taskId } = req.params;
-    const { title } = req.body;
+    const { title } = req.body as CreateSubtaskRequest;
     const userId = req.userId;
 
     // Validation

@@ -2,6 +2,7 @@
 import { Response } from "express";
 import { Task } from "../models/Task.js";
 import { AuthRequest } from "../middlewares/auth.js";
+import { CreateTaskRequest, UpdateTaskRequest } from "../types/requests.js";
 
 /**
  * CREATE TASK
@@ -11,7 +12,7 @@ import { AuthRequest } from "../middlewares/auth.js";
 export const createTask = async (req: AuthRequest, res: Response) => {
   try {
     // Request body se data le rahe
-    const { title, description, status, priority, dueDate, tags } = req.body;
+    const { title, description, status, priority, dueDate, tags } = req.body as CreateTaskRequest;
 
     // Validation: Title required hai
     if (!title || title.trim() === "") {
@@ -36,14 +37,15 @@ export const createTask = async (req: AuthRequest, res: Response) => {
       message: "Task created successfully",
       task,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Create task error:", error);
     
     // Validation errors handle karo (Mongoose)
-    if (error.name === "ValidationError") {
+    if (error instanceof Error && error.name === "ValidationError") {
+      const mongoError = error as unknown as { errors?: Record<string, unknown> };
       return res.status(400).json({ 
         message: "Validation failed", 
-        errors: error.errors 
+        errors: mongoError.errors 
       });
     }
     

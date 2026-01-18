@@ -12,14 +12,15 @@ export const authenticateToken = (
   req: AuthRequest,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   // Get token from Authorization header
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
 
   // Check if token is present
   if (!token) {
-    return res.status(401).json({ message: "Access token required" });
+    res.status(401).json({ message: "Access token required" });
+    return;
   }
   // Verify token
   try {
@@ -28,6 +29,6 @@ export const authenticateToken = (
     req.userEmail = decoded.email;
     next();
   } catch (error) {
-    return res.status(403).json({ message: "Invalid or expired token" });
+    res.status(403).json({ message: "Invalid or expired token" });
   }
 };
