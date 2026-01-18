@@ -2,9 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt.js";
 
 // Extend Request interface to include userId and userEmail
+// This ensures all Request properties (body, params, query, headers, etc.) are available
 export interface AuthRequest extends Request {
   userId?: string;
   userEmail?: string;
+  body: any; // Explicitly declare body
+  params: any; // Explicitly declare params
+  query: any; // Explicitly declare query
+  headers: any; // Explicitly declare headers
 }
 
 // Middleware to authenticate JWT token

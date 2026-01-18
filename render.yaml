@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: taskengine-backend
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm install --legacy-peer-deps && npm run build
+    startCommand: node dist/server.js
+    workingDirectory: backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+
