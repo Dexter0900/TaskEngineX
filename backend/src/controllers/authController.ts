@@ -5,8 +5,7 @@ import {
   generateMagicLinkToken,
   verifyMagicLinkToken,
 } from "../utils/jwt.js";
-import { sendMagicLink } from "../utils/email.js";
-import { addEmailJob } from "../config/queue.js";
+import { emailService } from "../services/emailService.js";
 import { AuthRequest } from "../middlewares/auth.js";
 import bcrypt from "bcryptjs";
 import { ENV } from "../config/env.js";
@@ -105,32 +104,32 @@ export const signup = async (req: Request, res: Response) => {
       password: hashedPassword,
     });
 
-    // Add email job to queue (non-blocking)
-    console.log("📤 [SIGNUP] Adding email to queue...");
+    // Send email using email service (production: direct, development: queue)
+    console.log("📧 [SIGNUP] Sending verification email...");
     try {
-      await addEmailJob(email, token, "magic-link");
-      console.log("✅ [SIGNUP] Email job queued successfully");
+      await emailService.sendMagicLinkEmail(email, token);
+      console.log("✅ [SIGNUP] Email sent successfully");
 
       res.json({
         message:
           "Verification email sent! Please check your email to complete registration.",
         success: true,
       });
-    } catch (queueError) {
-      console.error("❌ [SIGNUP] Queue error:", queueError);
+    } catch (emailError) {
+      console.error("❌ [SIGNUP] Email sending failed:", emailError);
 
-      // Even if queue fails, return success - manual fallback can be done
       return res.status(500).json({
         message:
-          "Signup registered but email delivery queued. Please contact support if email doesn't arrive.",
-        error: "QUEUE_ERROR",
+          "Failed to send verification email. Please contact support or try again later.",
+        error: "EMAIL_SEND_FAILED",
         details:
           ENV.NODE_ENV === "development"
-            ? (queueError as Error).message
+            ? (emailError as Error).message
             : undefined,
       });
     }
-  } catch (error) {
+    }
+   catch (error) {
     console.error("❌ [SIGNUP] Unexpected error:", error);
     res.status(500).json({
       message: "An error occurred during signup. Please try again.",
