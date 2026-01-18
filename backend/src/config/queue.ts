@@ -2,23 +2,44 @@ import Queue from "bull";
 import { ENV } from "./env.js";
 import { sendMagicLink } from "../utils/email.js";
 
-// Redis configuration
-const REDIS_CONFIG = {
-  host: ENV.REDIS_HOST || "localhost",
-  port: ENV.REDIS_PORT || 6379,
-  ...(ENV.REDIS_PASSWORD && { password: ENV.REDIS_PASSWORD }),
-};
+// Redis configuration - supports both local Redis and Upstash
+const baseConfig = ENV.REDIS_URL
+  ? ENV.REDIS_URL // Use URL for Upstash or remote Redis
+  : {
+      // Fallback to host/port for local development
+      host: ENV.REDIS_HOST || "localhost",
+      port: ENV.REDIS_PORT || 6379,
+      ...(ENV.REDIS_PASSWORD && { password: ENV.REDIS_PASSWORD }),
+    };
+
+const isUpstash = ENV.REDIS_URL?.includes("upstash");
+
+// Enhanced connection options for reliability
+const queueOptions = typeof baseConfig === "string"
+  ? {
+      redis: {
+        url: baseConfig,
+        maxRetriesPerRequest: null,
+        enableReadyCheck: false,
+        enableOfflineQueue: true,
+      },
+    }
+  : {
+      redis: {
+        ...baseConfig,
+        maxRetriesPerRequest: null,
+        enableReadyCheck: false,
+        enableOfflineQueue: true,
+      },
+    };
 
 console.log(
   "🔌 Queue connecting to Redis at:",
-  REDIS_CONFIG.host,
-  REDIS_CONFIG.port,
+  isUpstash ? "Upstash (Cloud)" : ENV.REDIS_HOST || "localhost",
 );
 
 // Create email queue
-export const emailQueue = new Queue("email", {
-  redis: REDIS_CONFIG,
-});
+export const emailQueue = new Queue("email", queueOptions);
 
 // Queue event listeners
 emailQueue.on("completed", (job) => {

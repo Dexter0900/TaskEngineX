@@ -41,7 +41,8 @@ export const ENV = {
   MAGIC_LINK_SECRET: getRequiredEnv("MAGIC_LINK_SECRET") as string,
   MAGIC_LINK_EXPIRES_IN: (process.env.MAGIC_LINK_EXPIRES_IN || "15m") as string,
 
-  // Redis Queue
+  // Redis Queue (Upstash or Local)
+  REDIS_URL: process.env.REDIS_URL || "",
   REDIS_HOST: process.env.REDIS_HOST || "localhost",
   REDIS_PORT: parseInt(process.env.REDIS_PORT || "6379"),
   REDIS_PASSWORD: process.env.REDIS_PASSWORD || "",
