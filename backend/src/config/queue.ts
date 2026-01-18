@@ -3,14 +3,21 @@ import { ENV } from "./env.js";
 import { sendMagicLink } from "../utils/email.js";
 
 // Redis configuration - supports both local Redis and Upstash
-const baseConfig = ENV.REDIS_URL
-  ? ENV.REDIS_URL // Use URL for Upstash or remote Redis
-  : {
-      // Fallback to host/port for local development
-      host: ENV.REDIS_HOST || "localhost",
-      port: ENV.REDIS_PORT || 6379,
-      ...(ENV.REDIS_PASSWORD && { password: ENV.REDIS_PASSWORD }),
-    };
+const baseConfig =
+  ENV.REDIS_URL && ENV.REDIS_URL.trim()
+    ? ENV.REDIS_URL // Use URL for Upstash or remote Redis (Production)
+    : ENV.NODE_ENV === "production"
+      ? (() => {
+          throw new Error(
+            "REDIS_URL is required in production environment. Set Upstash connection URL."
+          );
+        })()
+      : {
+          // Fallback to host/port for local development only
+          host: ENV.REDIS_HOST || "localhost",
+          port: ENV.REDIS_PORT || 6379,
+          ...(ENV.REDIS_PASSWORD && { password: ENV.REDIS_PASSWORD }),
+        };
 
 const isUpstash = ENV.REDIS_URL?.includes("upstash");
 
@@ -22,6 +29,11 @@ const queueOptions = typeof baseConfig === "string"
         maxRetriesPerRequest: null,
         enableReadyCheck: false,
         enableOfflineQueue: true,
+        connectTimeout: 10000,
+        retryStrategy: (times: number) => {
+          const delay = Math.min(times * 50, 2000);
+          return delay;
+        },
       },
     }
   : {
