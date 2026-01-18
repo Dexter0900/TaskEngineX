@@ -3,12 +3,16 @@ import app from "./app.js";
 import { connectDB } from "./config/db.js";
 import { ENV } from "./config/env.js";
 import { initializeSocket } from "./config/socket.js";
-import { closeQueue } from "./config/queue.js";
+import { closeQueue, startEmailWorker } from "./config/queue.js";
 
 const startServer = async () => {
   try {
     // Connect to database
     await connectDB();
+
+    // Start email queue worker
+    startEmailWorker();
+    console.log("🚀 Email queue worker started");
 
     // Create HTTP server
     const httpServer = http.createServer(app);
