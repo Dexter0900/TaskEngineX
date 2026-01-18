@@ -5,7 +5,7 @@ import { sendMagicLink } from "../utils/email.js";
 // Redis configuration
 const REDIS_CONFIG = {
   host: ENV.REDIS_HOST || "localhost",
-  port: ENV.REDIS_PORT || "6379",
+  port: ENV.REDIS_PORT || 6379,
   ...(ENV.REDIS_PASSWORD && { password: ENV.REDIS_PASSWORD }),
 };
 
@@ -16,7 +16,9 @@ console.log(
 );
 
 // Create email queue
-export const emailQueue = new Queue("email", REDIS_CONFIG);
+export const emailQueue = new Queue("email", {
+  redis: REDIS_CONFIG,
+});
 
 // Queue event listeners
 emailQueue.on("completed", (job) => {
