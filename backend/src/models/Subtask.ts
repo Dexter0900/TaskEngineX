@@ -4,11 +4,14 @@ import mongoose, { Schema, Document } from "mongoose";
 /**
  * SUBTASK INTERFACE
  * Subtask ka type definition
+ * Inherits workspaceId and projectId from parent task
  */
 export interface ISubtask extends Document {
   taskId: mongoose.Types.ObjectId;
   title: string;
   completed: boolean;
+  workspaceId?: mongoose.Types.ObjectId | null; // Inherited from task
+  projectId?: mongoose.Types.ObjectId | null; // Inherited from task
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,10 +37,24 @@ const SubtaskSchema = new Schema<ISubtask>(
       type: Boolean,
       default: false,
     },
+    // Workspace Reference (inherited from parent task)
+    workspaceId: {
+      type: Schema.Types.ObjectId,
+      ref: "Workspace",
+      default: null,
+      index: true,
+    },
+    // Project Reference (inherited from parent task)
+    projectId: {
+      type: Schema.Types.ObjectId,
+      ref: "Project",
+      default: null,
+      index: true,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 /**

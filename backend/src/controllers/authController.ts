@@ -8,7 +8,12 @@ import {
 import { sendMagicLink } from "../utils/email.js";
 import { addEmailJob } from "../config/queue.js";
 import { AuthRequest } from "../middlewares/auth.js";
-import { SignupRequest, VerifyMagicLinkRequest, SetPasswordRequest, LoginRequest } from "../types/requests.js";
+import {
+  SignupRequest,
+  VerifyMagicLinkRequest,
+  SetPasswordRequest,
+  LoginRequest,
+} from "../types/requests.js";
 import bcrypt from "bcryptjs";
 import { ENV } from "../config/env.js";
 
@@ -109,14 +114,14 @@ export const signup = async (req: AuthRequest, res: Response) => {
     // Send email: Production = Direct, Development = Queue
     console.log("📧 [SIGNUP] Sending verification email...");
     try {
-      if (ENV.NODE_ENV === "production") {
-        // Production: Direct email send (no queue)
-        console.log("⚡ [SIGNUP] Direct email send (production)");
-        await sendMagicLink(email, token);
-      } else {
+      if (ENV.NODE_ENV === "development") {
         // Development: Queue-based for testing
         console.log("📤 [SIGNUP] Queue-based email (development)");
         await addEmailJob(email, token, "magic-link");
+      } else {
+        // Production: Direct email send (no queue)
+        console.log("⚡ [SIGNUP] Direct email send (production)");
+        await sendMagicLink(email, token);
       }
 
       console.log("✅ [SIGNUP] Email sent successfully");
@@ -135,7 +140,9 @@ export const signup = async (req: AuthRequest, res: Response) => {
         error: "EMAIL_SEND_FAILED",
         details:
           ENV.NODE_ENV === "development"
-            ? (emailError instanceof Error ? emailError.message : String(emailError))
+            ? emailError instanceof Error
+              ? emailError.message
+              : String(emailError)
             : undefined,
       });
     }
@@ -144,7 +151,11 @@ export const signup = async (req: AuthRequest, res: Response) => {
     res.status(500).json({
       message: "An error occurred during signup. Please try again.",
       error:
-        ENV.NODE_ENV === "development" ? (error instanceof Error ? error.message : String(error)) : undefined,
+        ENV.NODE_ENV === "development"
+          ? error instanceof Error
+            ? error.message
+            : String(error)
+          : undefined,
     });
   }
 };

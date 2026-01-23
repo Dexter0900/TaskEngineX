@@ -48,4 +48,5 @@ export interface CreateSubtaskRequest {
 
 export interface UpdateSubtaskRequest {
   title?: string;
+  isCompleted?: boolean;
 }

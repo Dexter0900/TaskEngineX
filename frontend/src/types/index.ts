@@ -68,9 +68,16 @@ export interface Task {
   description?: string;
   status: "pending" | "in-progress" | "completed";
   priority: "low" | "medium" | "high";
-  dueDate?: string;  // ISO date string
+  dueDate?: string; // ISO date string
   tags?: string[];
   userId: string;
+  // Workspace task fields
+  workspaceId?: string | null;
+  projectId?: string | null;
+  assignedTo?: string | null;
+  assignedBy?: string | null;
+  approvalStatus?: "pending-approval" | "approved" | "rejected" | null;
+  completedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -112,6 +119,75 @@ export interface TaskStatsResponse {
     lowPriority: number;
     mediumPriority: number;
     highPriority: number;
+  };
+}
+
+/**
+ * WORKSPACE TYPES
+ * Workspace and related structures
+ */
+export interface WorkspaceUser {
+  userId: string;
+  role: "admin" | "assigner" | "worker";
+  joinedAt: string;
+}
+
+export interface Workspace {
+  _id: string;
+  name: string;
+  description?: string;
+  creator: string | User;
+  members: WorkspaceUser[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WorkspacesResponse {
+  message: string;
+  workspaces: Workspace[];
+}
+
+/**
+ * PROJECT TYPES
+ * Project and related structures
+ */
+export interface ProjectMember {
+  userId: string | User;
+  role: "assigner" | "worker";
+}
+
+export interface Project {
+  _id: string;
+  workspaceId: string;
+  name: string;
+  description?: string;
+  status: "active" | "archived";
+  assigners: ProjectMember[];
+  workers: ProjectMember[];
+  createdBy: string | User;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProjectsResponse {
+  message: string;
+  projects: Project[];
+}
+
+/**
+ * WORKSPACE TASK STATS
+ * Stats for workspace tasks (includes approval status)
+ */
+export interface WorkspaceTaskStatsResponse {
+  message: string;
+  stats: {
+    total: number;
+    pending: number;
+    inProgress: number;
+    completed: number;
+    pendingApproval: number;
+    approved: number;
+    rejected: number;
   };
 }
 

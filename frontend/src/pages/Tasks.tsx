@@ -175,7 +175,7 @@ export default function Tasks() {
         userId: user?.id,
       });
       toast.success("Task status updated");
-      await fetchTasks();
+      // await fetchTasks(); // Optional: Refresh the task list
     } catch (error) {
       toast.error("Failed to toggle status");
     }

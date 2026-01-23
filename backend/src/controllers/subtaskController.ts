@@ -3,7 +3,10 @@ import { Response } from "express";
 import Subtask from "../models/Subtask";
 import { Task } from "../models/Task";
 import { AuthRequest } from "../middlewares/auth.js";
-import { CreateSubtaskRequest, UpdateSubtaskRequest } from "../types/requests.js";
+import {
+  CreateSubtaskRequest,
+  UpdateSubtaskRequest,
+} from "../types/requests.js";
 
 /**
  * GET ALL SUBTASKS FOR A TASK
@@ -116,7 +119,7 @@ export const toggleSubtask = async (req: AuthRequest, res: Response) => {
 export const updateSubtask = async (req: AuthRequest, res: Response) => {
   try {
     const { taskId, subtaskId } = req.params;
-    const { title } = req.body;
+    const { title } = req.body as UpdateSubtaskRequest;
     const userId = req.userId;
 
     // Validation
@@ -134,7 +137,7 @@ export const updateSubtask = async (req: AuthRequest, res: Response) => {
     const subtask = await Subtask.findOneAndUpdate(
       { _id: subtaskId, taskId },
       { title: title.trim() },
-      { new: true }
+      { new: true },
     );
 
     if (!subtask) {
@@ -187,7 +190,7 @@ export const deleteSubtask = async (req: AuthRequest, res: Response) => {
 export const deleteAllSubtaskOfTask = async (
   req: AuthRequest,
   res: Response,
-  next: Function
+  next: Function,
 ) => {
   try {
     const { id: taskId } = req.params;
