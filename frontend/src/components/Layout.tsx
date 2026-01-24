@@ -106,9 +106,9 @@ export default function Layout({ children }: LayoutProps) {
                   initial={{ opacity: 0, scale: 0.95, x: -10 }}
                   animate={{ opacity: 1, scale: 1, x: 0 }}
                   exit={{ opacity: 0, scale: 0.95, x: -10 }}
-                  className="absolute bottom-16 left-0 w-56 bg-card border border-border rounded-lg shadow-lg z-50 overflow-hidden"
+                  className="absolute bottom-16 left-0 w-56 bg-card border-2 border-border rounded-lg shadow-lg z-50 overflow-hidden"
                 >
-                  <div className="p-3 border-b border-border">
+                  <div className="p-3 border-b-2 border-border">
                     <p className="text-sm font-medium">
                       {user?.firstName} {user?.lastName}
                     </p>
@@ -136,7 +136,7 @@ export default function Layout({ children }: LayoutProps) {
                     </Link>
                   </div>
 
-                  <div className="border-t border-border py-1">
+                  <div className="border-t-2 border-border py-1">
                     <button
                       onClick={handleLogout}
                       className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors"

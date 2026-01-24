@@ -66,7 +66,7 @@ export default function Login() {
           </h1>
         </div>
         {/* Card */}
-        <div className="bg-card border border-border rounded-2xl shadow-lg p-8">
+        <div className="bg-card border-2 border-border rounded-2xl shadow-lg p-8">
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-2xl font-semibold text-foreground mb-2">
@@ -79,7 +79,7 @@ export default function Login() {
           {/* Google Button */}
           <button
             onClick={loginWithGoogle}
-            className="w-full flex items-center justify-center py-3 px-4 mb-6 border border-border rounded-lg hover:bg-accent transition-colors"
+            className="w-full flex items-center justify-center py-3 px-4 mb-6 border-2 border-border rounded-lg hover:bg-accent transition-colors"
           >
             <FcGoogle className="w-5 h-5 mr-2" />
             Continue with Google
@@ -87,9 +87,9 @@ export default function Login() {
 
           {/* Divider */}
           <div className="flex items-center gap-4 mb-6">
-            <div className="flex-1 border-t border-border"></div>
+            <div className="flex-1 border-t-2 border-border"></div>
             <span className="text-sm text-muted-foreground">or</span>
-            <div className="flex-1 border-t border-border"></div>
+            <div className="flex-1 border-t-2 border-border"></div>
           </div>
 
           {/* Form */}
