@@ -122,7 +122,7 @@ export default function Signup() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
-          className="max-w-md w-full bg-card border border-border rounded-2xl shadow-lg p-8 text-center"
+          className="max-w-md w-full bg-card border-2 border-border rounded-2xl shadow-lg p-8 text-center"
         >
           <motion.div
             initial={{ scale: 0 }}
@@ -175,11 +175,11 @@ export default function Signup() {
         </div>
 
         {/* Card */}
-        <div className="bg-card border border-border rounded-2xl shadow-lg p-8">
+        <div className="bg-card border-2 border-border rounded-2xl shadow-lg p-8">
           {/* Google Button */}
           <button
             onClick={loginWithGoogle}
-            className="w-full mb-6 flex items-center justify-center gap-2 px-4 py-3 border border-border rounded-lg hover:bg-accent transition-colors"
+            className="w-full mb-6 flex items-center justify-center gap-2 px-4 py-3 border-2 border-border rounded-lg hover:bg-accent transition-colors"
           >
             <FcGoogle className="w-5 h-5 mr-2" />
             Continue with Google
@@ -187,9 +187,9 @@ export default function Signup() {
 
           {/* Divider */}
           <div className="flex items-center gap-4 mb-6">
-            <div className="flex-1 border-t border-border"></div>
+            <div className="flex-1 border-t-2 border-border"></div>
             <span className="text-sm text-muted-foreground">or</span>
-            <div className="flex-1 border-t border-border"></div>
+            <div className="flex-1 border-t-2 border-border"></div>
           </div>
 
           {/* Form */}
@@ -278,7 +278,7 @@ export default function Signup() {
 
                 {/* Tooltip on field hover */}
                 {formData.password && (
-                  <div className="absolute bottom-full mb-2 left-0 bg-card border border-border rounded px-3 py-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
+                  <div className="absolute bottom-full mb-2 left-0 bg-card border-2 border-border rounded px-3 py-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
                     <div className="text-muted-foreground mb-1">Requirements:</div>
                     <div className={`flex items-center gap-1.5 ${passwordStrengthInfo.requirements.minLength ? "text-emerald-400" : "text-muted-foreground"}`}>
                       <span>●</span>

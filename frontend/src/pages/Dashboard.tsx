@@ -102,8 +102,7 @@ export default function Dashboard() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-4xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">Overview of your tasks and productivity</p>
+          <h1 className="text-4xl font-medium text-foreground">Dashboard</h1>
         </div>
 
         {/* Stats Cards */}
@@ -112,7 +111,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
+            className="bg-card border-2 border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -120,7 +119,7 @@ export default function Dashboard() {
                 <p className="text-3xl font-bold text-foreground mt-2">{stats?.total || 0}</p>
               </div>
               <div className="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center">
-                <FiTrendingUp className="text-blue-400" size={24} />
+                <FiTrendingUp className="text-blue-200" size={24} />
               </div>
             </div>
           </motion.div>
@@ -129,7 +128,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
+            className="bg-card border-2 border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -137,7 +136,7 @@ export default function Dashboard() {
                 <p className="text-3xl font-bold text-foreground mt-2">{stats?.pending || 0}</p>
               </div>
               <div className="w-12 h-12 bg-amber-900 rounded-lg flex items-center justify-center">
-                <FiClock className="text-amber-400" size={24} />
+                <FiClock className="text-amber-200" size={24} />
               </div>
             </div>
           </motion.div>
@@ -146,7 +145,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
+            className="bg-card border-2 border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -154,7 +153,7 @@ export default function Dashboard() {
                 <p className="text-3xl font-bold text-foreground mt-2">{stats?.inProgress || 0}</p>
               </div>
               <div className="w-12 h-12 bg-purple-900 rounded-lg flex items-center justify-center">
-                <FiAlertCircle className="text-purple-400" size={24} />
+                <FiAlertCircle className="text-purple-200" size={24} />
               </div>
             </div>
           </motion.div>
@@ -163,7 +162,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
+            className="bg-card border-2 border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -171,7 +170,7 @@ export default function Dashboard() {
                 <p className="text-3xl font-bold text-foreground mt-2">{stats?.completed || 0}</p>
               </div>
               <div className="w-12 h-12 bg-green-900 rounded-lg flex items-center justify-center">
-                <FiCheckCircle className="text-green-400" size={24} />
+                <FiCheckCircle className="text-green-200" size={24} />
               </div>
             </div>
           </motion.div>
@@ -184,7 +183,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5 }}
-            className="bg-card border border-border rounded-xl p-6"
+            className="bg-card border-2 border-border rounded-xl p-6"
           >
             <h3 className="text-lg font-semibold mb-4">Status Distribution</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -215,7 +214,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6 }}
-            className="bg-card border border-border rounded-xl p-6"
+            className="bg-card border-2 border-border rounded-xl p-6"
           >
             <h3 className="text-lg font-semibold mb-4">Priority Breakdown</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -311,7 +310,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.8 }}
-            className="lg:col-span-2 bg-card border border-border rounded-xl p-6"
+            className="lg:col-span-2 bg-card border-2 border-border rounded-xl p-6"
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Recent Tasks</h3>
@@ -330,7 +329,7 @@ export default function Dashboard() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.9 + index * 0.1 }}
-                  className="flex items-center justify-between p-3 bg-background rounded-lg border border-border hover:border-primary-500 transition-colors"
+                  className="flex items-center justify-between p-3 bg-background rounded-lg border-2 border-border hover:border-primary-500 transition-colors"
                 >
                   <div className="flex-1">
                     <p className="font-medium text-sm">{task.title}</p>
