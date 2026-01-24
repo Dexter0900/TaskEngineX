@@ -237,8 +237,7 @@ export default function Tasks() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-foreground">Tasks</h1>
-            <p className="text-muted-foreground">Manage your tasks and stay organized</p>
+            <h1 className="text-4xl font-medium text-foreground">Tasks</h1>
           </div>
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -252,7 +251,7 @@ export default function Tasks() {
         </div>
 
         {/* Filters and Sort */}
-        <div className="bg-card border border-border rounded-xl p-4">
+        <div className="bg-card border-2 border-border rounded-xl p-4">
           <div className="flex items-center gap-2 mb-3">
             <FiFilter className="w-6 h-6 text-muted-foreground" />
             <span className="text-2xl font-medium text-foreground">Filters & Sort</span>
@@ -314,7 +313,7 @@ export default function Tasks() {
         {/* Tasks List */}
         <div className="space-y-3">
           {currentTasks.length === 0 ? (
-            <div className="bg-card border border-border rounded-xl p-12 text-center">
+            <div className="bg-card border-2 border-border rounded-xl p-12 text-center">
               <p className="text-muted-foreground">No tasks found. Create your first task!</p>
             </div>
           ) : (
@@ -324,7 +323,7 @@ export default function Tasks() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-card border border-border hover:border-primary-500 rounded-xl p-6 transition-all"
+                className="bg-card border-2 border-border hover:border-primary-500 rounded-xl p-6 transition-all"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
@@ -367,7 +366,7 @@ export default function Tasks() {
                     </div>
 
                     {/* Subtasks - Always visible now */}
-                    <div className="border-t border-border mt-4 pt-4">
+                    <div className="border-t-2 border-border mt-4 pt-4">
                       <SubtaskList taskId={task._id} />
                     </div>
                   </div>
@@ -422,7 +421,7 @@ export default function Tasks() {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-card border border-border rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent transition-colors"
+              className="px-4 py-2 bg-card border-2 border-border rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-accent transition-colors"
             >
               Next
             </button>
@@ -451,9 +450,9 @@ export default function Tasks() {
               className="fixed inset-0 flex items-center justify-center z-50 p-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+              <div className="bg-card border-2 border-border rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
                 {/* Modal Header */}
-                <div className="flex items-center justify-between p-6 border-b border-border">
+                <div className="flex items-center justify-between p-6 border-b-2 border-border">
                   <h2 className="text-2xl font-medium text-foreground">
                     {editingTask ? "Edit Task" : "Create New Task"}
                   </h2>
@@ -557,6 +556,7 @@ export default function Tasks() {
                       onChange={(e) =>
                         setFormData({ ...formData, dueDate: e.target.value })
                       }
+                      style={{ colorScheme: "dark" }}
                       className="w-full px-4 py-3 bg-background border border-input rounded-lg focus:ring-2 focus:ring-ring outline-none text-foreground"
                     />
                   </div>
@@ -604,7 +604,7 @@ export default function Tasks() {
               className="fixed inset-0 flex items-center justify-center z-50 p-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6">
+              <div className="bg-card border-2 border-border rounded-2xl shadow-2xl w-full max-w-md p-6">
                 <h3 className="text-xl font-medium text-foreground mb-2">
                   Delete Task?
                 </h3>

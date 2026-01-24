@@ -127,7 +127,7 @@ export default function SetPassword() {
         </div>
 
         {/* Card */}
-        <div className="bg-card border border-border rounded-2xl shadow-lg p-8">
+        <div className="bg-card border-2 border-border rounded-2xl shadow-lg p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name Fields (Optional Update) */}
             <div className="grid grid-cols-2 gap-4">
@@ -192,7 +192,7 @@ export default function SetPassword() {
             
                             {/* Tooltip on field hover */}
                             {formData.password && (
-                              <div className="absolute bottom-full mb-2 left-0 bg-card border border-border rounded px-3 py-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
+                              <div className="absolute bottom-full mb-2 left-0 bg-card border-2 border-border rounded px-3 py-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
                                 <div className="text-muted-foreground mb-1">Requirements:</div>
                                 <div className={`flex items-center gap-1.5 ${passwordStrengthInfo.requirements.minLength ? "text-emerald-400" : "text-muted-foreground"}`}>
                                   <span>●</span>
