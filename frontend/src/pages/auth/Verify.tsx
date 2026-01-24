@@ -61,10 +61,10 @@ const Verify = () => {
         className="w-full max-w-md"
       >
         {status === "loading" && (
-          <div className="bg-card rounded-xl p-8 sm:p-10 text-center border border-border">
+          <div className="bg-card rounded-xl p-8 sm:p-10 text-center border-2 border-border">
             <div className="mb-6">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-card">
-                <div className="w-8 h-8 border-3 border-zinc-800 border-t-white rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-zinc-800 border-t-white rounded-full animate-spin" />
               </div>
             </div>
             <h2 className="text-2xl font-semibold text-white mb-3">Verifying</h2>
@@ -73,7 +73,7 @@ const Verify = () => {
         )}
 
         {status === "success" && (
-          <div className="bg-background rounded-xl p-8 sm:p-10 text-center border border-border">
+          <div className="bg-background rounded-xl p-8 sm:p-10 text-center border-2 border-border">
             <div className="mb-6">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-900/30 border border-emerald-700/50">
                 <span className="text-3xl">✓</span>
