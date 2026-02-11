@@ -8,9 +8,19 @@ import {
   deleteTask,
   toggleTaskStatus,
   getTaskStats,
+  createWorkspaceTask,
+  getWorkspaceTasks,
+  markTaskComplete,
+  approveTask,
+  getWorkspaceTaskStats,
 } from "../controllers/taskController.js";
 import { deleteAllSubtaskOfTask } from "../controllers/subtaskController.js";
-import { authenticateToken } from "../middlewares/auth.js";
+import { authenticate } from "../middlewares/auth.js";
+import {
+  verifyWorkspaceMember,
+  verifyWorkspaceAssigner,
+  verifyProjectMember,
+} from "../middlewares/workspaceAuth.js";
 
 const router = express.Router();
 
@@ -25,7 +35,7 @@ const router = express.Router();
 // ============================================
 // GET /api/tasks/stats
 // Why first? Agar last mein rakha toh "/stats" ko ":id" samajh lega
-router.get("/stats", authenticateToken, getTaskStats);
+router.get("/stats", authenticate, getTaskStats);
 
 // ============================================
 // CRUD ROUTES
@@ -42,7 +52,7 @@ router.get("/stats", authenticateToken, getTaskStats);
  *   tags: ["work", "urgent"]
  * }
  */
-router.post("/", authenticateToken, createTask);
+router.post("/", authenticate, createTask);
 
 /**
  * GET ALL TASKS
@@ -59,7 +69,7 @@ router.post("/", authenticateToken, createTask);
  *   GET /api/tasks?priority=high&status=pending
  *   GET /api/tasks?search=urgent
  */
-router.get("/", authenticateToken, getAllTasks);
+router.get("/", authenticate, getAllTasks);
 
 /**
  * GET SINGLE TASK
@@ -67,7 +77,7 @@ router.get("/", authenticateToken, getAllTasks);
  * Params: id (MongoDB ObjectId)
  * Example: GET /api/tasks/65f1234567890abcdef12345
  */
-router.get("/:id", authenticateToken, getTaskById);
+router.get("/:id", authenticate, getTaskById);
 
 /**
  * UPDATE TASK
@@ -83,7 +93,7 @@ router.get("/:id", authenticateToken, getTaskById);
  * }
  * Note: Saari fields optional hain, jo bheji wo update hongi
  */
-router.put("/:id", authenticateToken, updateTask);
+router.put("/:id", authenticate, updateTask);
 
 /**
  * DELETE TASK
@@ -91,7 +101,7 @@ router.put("/:id", authenticateToken, updateTask);
  * Params: id
  * Example: DELETE /api/tasks/65f1234567890abcdef12345
  */
-router.delete("/:id", authenticateToken, deleteAllSubtaskOfTask, deleteTask);
+router.delete("/:id", authenticate, deleteAllSubtaskOfTask, deleteTask);
 
 // ============================================
 // SPECIAL ROUTES
@@ -108,6 +118,62 @@ router.delete("/:id", authenticateToken, deleteAllSubtaskOfTask, deleteTask);
  *
  * Example: PATCH /api/tasks/65f123.../toggle
  */
-router.patch("/:id/toggle", authenticateToken, toggleTaskStatus);
+router.patch("/:id/toggle", authenticate, toggleTaskStatus);
+
+// ============================================
+// WORKSPACE TASK ROUTES
+// ============================================
+
+/**
+ * GET WORKSPACE TASK STATS
+ * GET /api/workspaces/:workspaceId/tasks/stats
+ * Role-based stats for workspace tasks
+ */
+router.get(
+  "/workspaces/:workspaceId/tasks/stats",
+  authenticate,
+  verifyWorkspaceMember,
+  getWorkspaceTaskStats,
+);
+
+/**
+ * CREATE WORKSPACE TASK
+ * POST /api/workspaces/:workspaceId/projects/:projectId/tasks
+ * Only assigners can create tasks
+ */
+router.post(
+  "/workspaces/:workspaceId/projects/:projectId/tasks",
+  authenticate,
+  verifyWorkspaceMember,
+  verifyWorkspaceAssigner,
+  verifyProjectMember,
+  createWorkspaceTask,
+);
+
+/**
+ * GET WORKSPACE TASKS
+ * GET /api/workspaces/:workspaceId/tasks
+ * Role-based filtering (workers see only assigned, assigners see their tasks)
+ */
+router.get(
+  "/workspaces/:workspaceId/tasks",
+  authenticate,
+  verifyWorkspaceMember,
+  getWorkspaceTasks,
+);
+
+/**
+ * MARK TASK AS COMPLETE (Worker workflow)
+ * PATCH /api/tasks/:id/mark-complete
+ * Worker marks task as done, sends to pending-approval
+ */
+router.patch("/:id/mark-complete", authenticate, markTaskComplete);
+
+/**
+ * APPROVE/REJECT TASK (Assigner workflow)
+ * PATCH /api/tasks/:id/approval
+ * Body: { action: "approve" | "reject", feedback?: "string" }
+ */
+router.patch("/:id/approval", authenticate, approveTask);
 
 export default router;

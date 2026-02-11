@@ -16,7 +16,7 @@ export interface AuthRequest extends Request {
 export const authenticateToken = (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   // Get token from Authorization header
   const authHeader = req.headers.authorization;
@@ -37,3 +37,6 @@ export const authenticateToken = (
     res.status(403).json({ message: "Invalid or expired token" });
   }
 };
+
+// Export alias for workspace auth compatibility
+export const authenticate = authenticateToken;
