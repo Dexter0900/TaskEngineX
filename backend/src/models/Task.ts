@@ -94,7 +94,6 @@ const taskSchema = new Schema<ITask>(
       type: Schema.Types.ObjectId,
       ref: "Workspace",
       default: null,
-      index: true,
     },
 
     // Project Reference (optional, workspace tasks only)
@@ -102,7 +101,6 @@ const taskSchema = new Schema<ITask>(
       type: Schema.Types.ObjectId,
       ref: "Project",
       default: null,
-      index: true,
     },
 
     // Worker assigned to this task (workspace tasks only)

@@ -1,11 +1,13 @@
 import http from "http";
 import app from "./app.js";
+import dns from "dns";
 import { connectDB } from "./config/db.js";
 import { ENV } from "./config/env.js";
 import { initializeSocket } from "./config/socket.js";
 import { closeQueue, startEmailWorker } from "./config/queue.js";
 
 const startServer = async () => {
+  dns.setServers(["8.8.8.8", "8.8.4.4"]);
   try {
     // Connect to database
     await connectDB();

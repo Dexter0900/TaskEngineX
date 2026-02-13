@@ -25,7 +25,6 @@ const projectSchema = new Schema<IProject>(
       type: Schema.Types.ObjectId,
       ref: "Workspace",
       required: true,
-      index: true,
     },
 
     // Project Name
@@ -51,7 +50,6 @@ const projectSchema = new Schema<IProject>(
         message: "{VALUE} is not a valid status",
       },
       default: "active",
-      index: true,
     },
 
     // Project Assigners (who can assign tasks)
