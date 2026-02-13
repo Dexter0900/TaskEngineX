@@ -26,7 +26,6 @@ const SubtaskSchema = new Schema<ISubtask>(
       type: Schema.Types.ObjectId,
       ref: "Task",
       required: true,
-      index: true, // Index for faster queries
     },
     title: {
       type: String,
@@ -42,14 +41,12 @@ const SubtaskSchema = new Schema<ISubtask>(
       type: Schema.Types.ObjectId,
       ref: "Workspace",
       default: null,
-      index: true,
     },
     // Project Reference (inherited from parent task)
     projectId: {
       type: Schema.Types.ObjectId,
       ref: "Project",
       default: null,
-      index: true,
     },
   },
   {
