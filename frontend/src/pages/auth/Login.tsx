@@ -6,6 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { login, loginWithGoogle } from "../../api/authApi";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
+import { FiArrowLeft } from "react-icons/fi";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -53,6 +54,14 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-6 left-6 flex items-center gap-1 px-4 py-2 rounded bg-card text-muted-foreground hover:text-primary hover:border-primary transition"
+        title="Back"
+      >
+        <FiArrowLeft className="w-5 h-5" /> Back
+      </button>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

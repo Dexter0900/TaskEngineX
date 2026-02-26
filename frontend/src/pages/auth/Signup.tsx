@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiMail, FiLock, FiUser, FiCheckCircle, FiEye, FiEyeOff } from "react-icons/fi";
+import {
+  FiMail,
+  FiLock,
+  FiUser,
+  FiCheckCircle,
+  FiEye,
+  FiEyeOff,
+} from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
 import { signup, loginWithGoogle } from "../../api/authApi";
 import toast from "react-hot-toast";
+import { FiArrowLeft } from "react-icons/fi";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -20,7 +28,8 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const passwordsMatch = formData.password === confirmPassword && confirmPassword !== "";
+  const passwordsMatch =
+    formData.password === confirmPassword && confirmPassword !== "";
 
   // Password strength validator
   const getPasswordStrength = (password: string) => {
@@ -93,7 +102,7 @@ export default function Signup() {
     }
     if (!requirements.hasSpecial) {
       toast.error(
-        "Password must contain at least one special character (!@#$%^&*...)"
+        "Password must contain at least one special character (!@#$%^&*...)",
       );
       return;
     }
@@ -118,6 +127,14 @@ export default function Signup() {
   if (emailSent) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-6 left-6 flex items-center gap-1 px-4 py-2 rounded bg-card text-muted-foreground hover:text-primary hover:border-primary transition"
+          title="Back"
+        >
+          <FiArrowLeft className="w-5 h-5" /> Back
+        </button>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -158,6 +175,14 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-6 left-6 flex items-center gap-1 px-4 py-2 rounded bg-card text-muted-foreground hover:text-primary hover:border-primary transition"
+        title="Back"
+      >
+        <FiArrowLeft className="w-5 h-5" /> Back
+      </button>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -273,26 +298,40 @@ export default function Signup() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <FiEyeOff className="w-5 h-5" />
+                  ) : (
+                    <FiEye className="w-5 h-5" />
+                  )}
                 </button>
 
                 {/* Tooltip on field hover */}
                 {formData.password && (
                   <div className="absolute bottom-full mb-2 left-0 bg-card border-2 border-border rounded px-3 py-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
-                    <div className="text-muted-foreground mb-1">Requirements:</div>
-                    <div className={`flex items-center gap-1.5 ${passwordStrengthInfo.requirements.minLength ? "text-emerald-400" : "text-muted-foreground"}`}>
+                    <div className="text-muted-foreground mb-1">
+                      Requirements:
+                    </div>
+                    <div
+                      className={`flex items-center gap-1.5 ${passwordStrengthInfo.requirements.minLength ? "text-emerald-400" : "text-muted-foreground"}`}
+                    >
                       <span>●</span>
                       <span>Min 8 chars</span>
                     </div>
-                    <div className={`flex items-center gap-1.5 ${passwordStrengthInfo.requirements.hasCapital ? "text-emerald-400" : "text-muted-foreground"}`}>
+                    <div
+                      className={`flex items-center gap-1.5 ${passwordStrengthInfo.requirements.hasCapital ? "text-emerald-400" : "text-muted-foreground"}`}
+                    >
                       <span>●</span>
                       <span>1 Capital (A-Z)</span>
                     </div>
-                    <div className={`flex items-center gap-1.5 ${passwordStrengthInfo.requirements.hasNumber ? "text-emerald-400" : "text-muted-foreground"}`}>
+                    <div
+                      className={`flex items-center gap-1.5 ${passwordStrengthInfo.requirements.hasNumber ? "text-emerald-400" : "text-muted-foreground"}`}
+                    >
                       <span>●</span>
                       <span>1 Number (0-9)</span>
                     </div>
-                    <div className={`flex items-center gap-1.5 ${passwordStrengthInfo.requirements.hasSpecial ? "text-emerald-400" : "text-muted-foreground"}`}>
+                    <div
+                      className={`flex items-center gap-1.5 ${passwordStrengthInfo.requirements.hasSpecial ? "text-emerald-400" : "text-muted-foreground"}`}
+                    >
                       <span>●</span>
                       <span>1 Special (!@#...)</span>
                     </div>
@@ -312,7 +351,7 @@ export default function Signup() {
                         animate={{ scaleX: 1 }}
                         transition={{ delay: index * 0.05 }}
                         className={`flex-1 h-1 rounded-full transition-colors duration-300 ${getStrengthColor(
-                          index
+                          index,
                         )}`}
                       />
                     ))}
@@ -320,7 +359,8 @@ export default function Signup() {
 
                   {/* Strength Label */}
                   <p className="text-xs font-semibold">
-                    Strength: <span className="text-zinc-400">{getStrengthLabel()}</span>
+                    Strength:{" "}
+                    <span className="text-zinc-400">{getStrengthLabel()}</span>
                   </p>
                 </div>
               )}
@@ -339,7 +379,11 @@ export default function Signup() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className={`w-full pl-10 pr-12 py-3 bg-background border rounded-lg focus:ring-2 focus:ring-opacity-50 focus:border-accent outline-none text-foreground placeholder:text-muted-foreground caret-foreground ${
-                    confirmPassword && passwordsMatch ? "border-emerald-400 focus:ring-emerald-400/50" : confirmPassword && !passwordsMatch ? "border-red-500 focus:ring-red-500/50" : "border-input focus:ring-accent"
+                    confirmPassword && passwordsMatch
+                      ? "border-emerald-400 focus:ring-emerald-400/50"
+                      : confirmPassword && !passwordsMatch
+                        ? "border-red-500 focus:ring-red-500/50"
+                        : "border-input focus:ring-accent"
                   }`}
                   placeholder="••••••••"
                   required
@@ -350,7 +394,11 @@ export default function Signup() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {showConfirmPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                  {showConfirmPassword ? (
+                    <FiEyeOff className="w-5 h-5" />
+                  ) : (
+                    <FiEye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
               {confirmPassword && !passwordsMatch && (
@@ -368,9 +416,13 @@ export default function Signup() {
 
             <button
               type="submit"
-              disabled={loading || !passwordsMatch || passwordStrengthInfo.strength < 4}
+              disabled={
+                loading || !passwordsMatch || passwordStrengthInfo.strength < 4
+              }
               className={`w-full py-3 px-4 bg-primary text-white font-medium rounded-lg hover:bg-primary/70 hover:shadow-lg transition-colors ${
-                loading || !passwordsMatch || passwordStrengthInfo.strength < 4 ? "opacity-50 cursor-not-allowed" : ""
+                loading || !passwordsMatch || passwordStrengthInfo.strength < 4
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
               }`}
             >
               {loading ? "Signing Up..." : "Sign Up"}
@@ -388,6 +440,18 @@ export default function Signup() {
             </Link>
           </p>
         </div>
+        {/* Terms and Privacy Links */}
+        <p className="text-center text-xs text-muted-foreground mt-4">
+          By signing up, you agree to our
+          <Link to="/terms" className="text-primary underline mx-1">
+            Terms
+          </Link>
+          and
+          <Link to="/privacy" className="text-primary underline mx-1">
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </motion.div>
     </div>
   );

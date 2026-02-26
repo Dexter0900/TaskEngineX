@@ -1,5 +1,5 @@
 // src/App.tsx
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -14,6 +14,9 @@ import GoogleSuccess from "./pages/auth/GoogleSuccess";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import NotFound from "./pages/NotFound";
+import LandingPage from "./pages/LandingPage";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 /**
  * APP COMPONENT
@@ -30,6 +33,11 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/auth/verify" element={<Verify />} />
             <Route path="/auth/success" element={<GoogleSuccess />} />
+
+            {/* PUBLIC LANDING, TERMS, PRIVACY */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
 
             {/* PROTECTED ROUTES - Login required */}
             <Route
@@ -56,9 +64,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
-            {/* ROOT REDIRECT */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
             {/* 404 - Not Found */}
             <Route path="*" element={<NotFound />} />
