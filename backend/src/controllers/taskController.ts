@@ -67,7 +67,7 @@ export const getAllTasks = async (req: AuthRequest, res: Response) => {
     const { status, priority, search, sort = "-createdAt" } = req.query;
 
     // Filter object banao
-    const filter: any = { userId: req.userId }; // Sirf logged-in user ke tasks
+    const filter: any = { userId: req.userId, workspaceId: null }; // Sirf logged-in user ke tasks
 
     // Status filter (agar diya ho)
     if (status) {
@@ -301,7 +301,7 @@ export const getTaskStats = async (req: AuthRequest, res: Response) => {
 
     // Aggregate queries for stats
     const stats = await Task.aggregate([
-      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      { $match: { userId: new mongoose.Types.ObjectId(userId), workspaceId: null } },
       {
         $group: {
           _id: null,

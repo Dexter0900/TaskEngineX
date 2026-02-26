@@ -34,12 +34,11 @@ const workspaceSchema = new Schema<IWorkspace>(
     },
 
     // Creator (Admin)
-    creator: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      index: true,
-    },
+      creator: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
 
     // Members with roles
     members: [
