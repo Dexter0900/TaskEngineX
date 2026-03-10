@@ -50,7 +50,7 @@ export default function LandingPage() {
           <Link to="/login" className="flex items-center gap-1 px-4 py-2 rounded font-medium text-white bg-primary hover:bg-primary/80 transition-colors">
             <FiLogIn className="w-5 h-5" /> Login
           </Link>
-          <Link to="/signup" className="flex items-center gap-1 px-4 py-2 rounded font-medium text-primary border border-primary bg-transparent hover:bg-primary hover:text-white transition-colors">
+          <Link to="/signup" className="flex items-center gap-1 px-4 py-2 rounded font-medium text-primary bg-transparent hover:text-primary/80 transition-colors">
             <FiUserPlus className="w-5 h-5" /> Sign Up
           </Link>
         </div>
@@ -58,7 +58,7 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section id="top" className="flex-1 flex flex-col items-center justify-center text-center px-4 py-16">
-        <h1 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-br from-gray-200 to-white bg-clip-text text-transparent mb-4">
+        <h1 className="text-4xl md:text-6xl font-semibold bg-linear-to-br from-gray-200 to-white bg-clip-text text-transparent mb-4">
           Effortless Task & Team Management
         </h1>
         <p className="text-lg md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-8">
@@ -66,7 +66,7 @@ export default function LandingPage() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
           <Link to="/login" className="px-8 py-3 rounded bg-primary text-white font-semibold text-lg shadow hover:bg-primary/90 transition">Get Started</Link>
-          <Link to="/signup" className="px-8 py-3 rounded border border-primary text-primary font-semibold text-lg hover:bg-primary hover:text-white transition">Create Free Account</Link>
+          <Link to="/signup" className="px-8 py-3 rounded border border-primary text-primary font-semibold text-lg hover:text-primary/80 transition">Create Free Account</Link>
         </div>
       </section>
 
@@ -95,10 +95,10 @@ export default function LandingPage() {
           <span>&copy; {new Date().getFullYear()} TaskEngineX</span>
         </div>
         <div className="flex gap-4 text-primary text-xl">
-          <a href="mailto:support@taskenginex.com" className="hover:text-foreground" title="Email"><FiMail /></a>
-          <a href="tel:+911234567890" className="hover:text-foreground" title="Phone"><FiPhone /></a>
-          <a href="https://linkedin.com/in/your-linkedin" target="_blank" rel="noopener noreferrer" className="hover:text-foreground" title="LinkedIn"><FiLinkedin /></a>
-          <a href="https://github.com/your-github" target="_blank" rel="noopener noreferrer" className="hover:text-foreground" title="GitHub"><FiGithub /></a>
+          <a href="mailto:preet451383@gmail.com" className="hover:text-foreground" title="Email"><FiMail /></a>
+          <a href="tel:+919313254676" className="hover:text-foreground" title="Phone"><FiPhone /></a>
+          <a href="https://linkedin.com/in/Preet-Rajput" target="_blank" rel="noopener noreferrer" className="hover:text-foreground" title="LinkedIn"><FiLinkedin /></a>
+          <a href="https://github.com/Dexter0900" target="_blank" rel="noopener noreferrer" className="hover:text-foreground" title="GitHub"><FiGithub /></a>
           <a href="/terms" className="hover:text-foreground" title="Terms"><FiShield /></a>
           <a href="/privacy" className="hover:text-foreground" title="Privacy"><FiCheckCircle /></a>
         </div>
