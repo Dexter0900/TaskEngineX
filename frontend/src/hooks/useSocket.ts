@@ -15,8 +15,11 @@ export const useSocket = () => {
     // Connect to socket only if user is authenticated
     if (!user || !token) return;
 
-    // Create socket connection
-    socketRef.current = io(import.meta.env.VITE_API_URL || "http://localhost:5000", {
+    // Derive socket URL from API URL, but remove /api if present
+    const rawApiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+    const socketUrl = rawApiUrl.replace(/\/api\/?$/, "");
+
+    socketRef.current = io(socketUrl, {
       auth: {
         token,
         userId: user.id,
