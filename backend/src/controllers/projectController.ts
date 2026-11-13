@@ -14,6 +14,10 @@ export const createProject = async (
 ): Promise<void> => {
   try {
     const { workspaceId } = req.params;
+    if (typeof workspaceId !== "string") {
+      res.status(400).json({ message: "Invalid workspace ID" });
+      return;
+    }
     const { name, description } = req.body;
 
     if (!name) {

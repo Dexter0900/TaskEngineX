@@ -27,8 +27,8 @@ export interface SetPasswordRequest {
 export interface CreateTaskRequest {
   title: string;
   description?: string;
-  status?: string;
-  priority?: string;
+  status?: "pending" | "in-progress" | "completed";
+  priority?: "low" | "medium" | "high";
   dueDate?: string;
   tags?: string[];
 }
@@ -36,8 +36,8 @@ export interface CreateTaskRequest {
 export interface UpdateTaskRequest {
   title?: string;
   description?: string;
-  status?: string;
-  priority?: string;
+  status?: "pending" | "in-progress" | "completed";
+  priority?: "low" | "medium" | "high";
   dueDate?: string;
   tags?: string[];
 }

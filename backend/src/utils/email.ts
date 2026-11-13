@@ -17,9 +17,9 @@ if (USE_SENDGRID) {
 }
 
 // Fallback to nodemailer
-import nodemailer from "nodemailer";
+import nodemailer, { type Transporter } from "nodemailer";
 
-let transporter: nodemailer.Transporter | null = null;
+let transporter: Transporter | null = null;
 
 if (!USE_SENDGRID && ENV.EMAIL_USER && ENV.EMAIL_PASSWORD) {
   try {

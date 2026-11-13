@@ -31,7 +31,7 @@ export const verifyWorkspaceMember = async (
 
     const { workspaceId } = req.params;
 
-    if (!workspaceId) {
+    if (typeof workspaceId !== "string" || !workspaceId) {
       res.status(400).json({ message: "Workspace ID is required" });
       return;
     }

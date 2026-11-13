@@ -101,7 +101,7 @@ TaskEngineX/
 
 Before running the project, make sure you have:
 
-- Node.js 18+ recommended
+- Node.js 22.12+ required
 - npm or pnpm
 - MongoDB instance running
 - Redis instance running (optional for local development, but used by queue/email features)
